@@ -1,0 +1,50 @@
+{% load render_bundle from webpack_loader %}
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>ELSAGest - {{ titolo_pagina }}</title>
+
+    {% block extra_head %} {% endblock %}
+
+    {% block site_css %}
+        {% render_bundle 'runtime' 'css' %}
+        {% render_bundle 'vendor' 'css' %}
+        {% render_bundle 'common' 'css' %}
+    {% endblock %}
+
+    {% block extra_css %} {% endblock %}
+
+
+</head>
+
+<body>
+
+    <!-- <div class="container-fluid" style="margin:12px"> -->
+    <div class="container-fluid">
+        {% block site_header %}
+            {% include 'base/header.html' %}
+        {% endblock %}
+
+        <!-- main block, used for page content -->
+        {% block content %} {% endblock %}
+
+        {% block site_footer %}
+            {% include 'base/footer.html' %}
+        {% endblock %}
+    </div>
+
+    {% block site_js %}
+        {% render_bundle 'runtime' 'js' %}
+        {% render_bundle 'vendor' 'js' %}
+        {% render_bundle 'common' 'js' %}
+    {% endblock %}
+
+    {% block extra_js %} {% endblock %}
+
+</body>
+</html>

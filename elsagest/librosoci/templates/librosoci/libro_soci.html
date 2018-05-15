@@ -1,0 +1,80 @@
+{% extends "base/base.html" %}
+{% load render_bundle from webpack_loader %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h3>Libro Soci di ELSA Siena</h3>
+    </div>
+    <h3 class="text-center">iscrizioni in scadenza e scadute</h3>
+    <div class="table-responsive">
+        <table class="table table-striped" id="soci-in-scadenza">
+            <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Cognome</th>
+                <th>email</th>
+                <th>ultimo rinnovo</th>
+                <th>scadenza iscrizione</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+    <h3 class="text-center">libro soci</h3><label>ordina per:</label><select>
+    <option value="1" selected>Alfabetico - cognome</option>
+    <option value="13">Alfabetico - nome</option>
+    <option value="14">Data iscrizione</option>
+    <option value="15">Scadenza più prossima</option>
+</select>
+    <div
+            class="table-responsive">
+        <table class="table table-striped" id="tutti-i-soci">
+            <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Cognome</th>
+                <th>email</th>
+                <th>iscrizione/rinnovo</th>
+                <th>scadenza iscrizione</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- I SOCI VERRANNO CARICATI QUI -->
+            </tbody>
+        </table>
+    </div>
+    <div class="page-header">
+        <h3>Ultime email inviate ai soci
+            <button class="btn btn-primary write-review" type="button">Nuova email ai soci</button>
+        </h3>
+    </div>
+    <div class="media">
+        <div class="media-body">
+            <h4 class="media-heading">Love this!</h4>
+            <div><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                    class="fa fa-star"></i><i class="fa fa-star-half"></i></div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis maximus nisl ac diam feugiat, non
+                vestibulum libero posuere. Vivamus pharetra leo non nulla egestas, nec malesuada orci finibus.</p>
+            <p><span class="reviewer-name"><strong>John Doe</strong></span><span class="review-date">7 Oct 2015</span>
+            </p>
+        </div>
+    </div>
+    <div class="media">
+        <div class="media-body">
+            <h4 class="media-heading">Fantastic product</h4>
+            <div><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                    class="fa fa-star"></i><i class="fa fa-star"></i></div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis maximus nisl ac diam feugiat, non
+                vestibulum libero posuere. Vivamus pharetra leo non nulla egestas, nec malesuada orci finibus.</p>
+            <p><span class="reviewer-name"><strong>Jane Doe</strong></span><span class="review-date">7 Oct 2015</span>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    {% render_bundle 'librosoci' 'js' %}
+{% endblock %}

@@ -22,6 +22,17 @@ WEBPACK_LOADER = {
     }
 }
 
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static/').replace("\\", "/"),
+)
+
+
+GRAPHENE = {
+    'SCHEMA': 'elsagest.schema.schema'
+}
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
@@ -44,6 +55,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'librosoci',
+
     'webpack_loader',
     'graphene_django',
 ]
@@ -63,7 +76,7 @@ ROOT_URLCONF = 'elsagest.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
