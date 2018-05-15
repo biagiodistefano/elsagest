@@ -1,0 +1,18 @@
+/les/static/build/**
+/node_modules/**
+/les/static/vendor/**
+
+# Comment out folders as we finish refactoring them
+# /les/bugreports/**
+/les/core/**
+/les/dottrina/**
+/les/gazzetta_ufficiale/**
+# /les/giurisprudenza/**
+# /les/home/**
+# /les/legislazione/static/legislazione/js/old/**
+# /les/legislazione/**
+/les/les/**
+/les/sostituzioni/**
+/les/strumenti/**
+# /les/templates/**
+/les/users_core/**
