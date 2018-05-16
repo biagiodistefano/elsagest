@@ -1,176 +1,171 @@
 import config from './config';
 import buildSocioTr from './build-socio-tr';
-
-const deltaScrollPx = 30;
+import buildConsigliereTr from './build-consigliere-tr';
 
 class SociLoader {
   constructor() {
-    console.log('DIO ABBAIA CONSTRUCTOR');
-    this.cleanup();
     this.init();
   }
 
   init() {
-    console.log('DIO ABBAIA INIT');
-    this.cleanup();
-    this.fetchTuttiSoci();
-    this.fetchSociScadenza();
+    this.fetchSoci();
+    this.fetchConsiglieri();
   }
 
-  fetchTuttiSoci() {
-    SociLoader.addLoader('#tutti-i-soci tbody');
-    const query = `
-      {
-        allSoci(
-          first: ${config.SOCI_MIN_RESULTS},
-          after: "${this.state.lastItemId || ''}"
-          ) {
-          edges {
-              node {
-                nome
-                cognome
-                email
-                dataIscrizione
-                scadenzaIscrizione
-              }
-            }
-            pageInfo {
-              startCursor
-              endCursor
-              hasNextPage
-            }
-          }
-        }
-    `;
+  fetchSoci() {
+    $('.table-soci').each((index, table) => {
+      const target = $(table).find('.lista-soci');
 
-    $.post({
-      url: '/graphql/',
-      data: JSON.stringify({ query }),
-      contentType: 'application/json'
-    })
-      .done(response => {
-        const { infiniteScrollInit } = this.state;
-        const { pageInfo, edges } = response.data.allSoci;
-        const { hasNextPage, endCursor } = pageInfo;
+      $(target).empty();
 
-        // update local data structures with graphql help
-        this.state.canFetchMore = hasNextPage;
-        this.state.lastItemId = endCursor || null;
+      let first = '';
+      let scadenza = '';
 
-        if (edges.length > 0) {
-          // populate panel with results
-          const wrapper = $('#tutti-i-soci tbody');
-          console.log(wrapper);
-          edges.forEach(edge => {
-            const item = buildSocioTr(edge.node);
-            wrapper.append(item);
-          });
-
-          // init infinite scroll
-          if (!infiniteScrollInit) {
-            this.state.infiniteScrollInit = true;
-            this.state.infiniteScrollEnabled = true;
-            this.initInfiniteScroll();
-          }
-
-          // enable infinite scroll again
-          this.state.infiniteScrollEnabled = true;
-        } else {
-          // show 'no results' message
-          $('#tutti-i-soci tbody').append(
-            $(
-              `
-              <div class="no-results">
-                <p>Nessun risultato trovato</p>
-              </div>
-              `
-            )
-          );
-        }
-      })
-      .fail(err => {
-        console.log(err);
-        this.handleError();
-      })
-      .always(() => {
-        SociLoader.removeLoader();
-      });
-  }
-
-  fetchSociScadenza() {
-    SociLoader.addLoader('#soci-in-scadenza tbody');
-    const query = `
-      {
-        allSoci(
-          scadenza: "True"
-          ) {
-          edges {
-              node {
-                nome
-                cognome
-                email
-                dataIscrizione
-                scadenzaIscrizione
-              }
-            }
-          }
-        }
-    `;
-
-    $.post({
-      url: '/graphql/',
-      data: JSON.stringify({ query }),
-      contentType: 'application/json'
-    })
-      .done(response => {
-        const { edges } = response.data.allSoci;
-        if (edges.length > 0) {
-          // populate panel with results
-          const wrapper = $('#soci-in-scadenza tbody');
-          console.log(wrapper);
-          edges.forEach(edge => {
-            const item = buildSocioTr(edge.node);
-            wrapper.append(item);
-          });
-
-          // enable infinite scroll again
-        } else {
-          // show 'no results' message
-          $('#soci-in-scadenza tbody').append(
-            $(
-              `
-              <div class="no-results">
-                <p>Nessun socio in scadenza</p>
-              </div>
-              `
-            )
-          );
-        }
-      })
-      .fail(err => {
-        console.log(err);
-        this.handleError();
-      })
-      .always(() => {
-        SociLoader.removeLoader();
-      });
-  }
-
-  initInfiniteScroll() {
-    $('.les__modal-sentenze .modal-body').scroll(evt => {
-      const target = $(evt.target);
-      const { infiniteScrollEnabled, canFetchMore } = this.state;
-
-      if (
-        infiniteScrollEnabled &&
-        canFetchMore &&
-        target.scrollTop() + target.innerHeight() >= target.get(0).scrollHeight - deltaScrollPx
-      ) {
-        // fetch additional items
-        this.state.infiniteScrollEnabled = false;
-
-        this.fetchItems();
+      if ($(target).attr('data-first')) {
+        first = `first: ${config.SOCI_MIN_RESULTS}`;
       }
+      if ($(target).attr('data-scadenza')) {
+        scadenza = 'scadenza: true';
+      }
+
+      const orderby = 'orderby: "cognome"';
+
+      const settings = [first, scadenza, orderby].join(', ');
+
+      SociLoader.addLoader(target);
+      const query = `
+        {
+          allSoci(
+            ${settings}
+            ) {
+            edges {
+                node {
+                  id
+                  nome
+                  cognome
+                  numeroTessera
+                  email
+                  dataIscrizione
+                  ultimoRinnovo
+                  scadenzaIscrizione
+                }
+              }
+              pageInfo {
+                hasNextPage
+              }
+            }
+          }
+      `;
+
+      $.post({
+        url: '/graphql/',
+        data: JSON.stringify({ query }),
+        contentType: 'application/json'
+      })
+        .done(response => {
+          console.log(response.data);
+          const { pageInfo, edges } = response.data.allSoci;
+          const { hasNextPage } = pageInfo;
+          if (edges.length > 0) {
+            // populate panel with results
+            const wrapper = $(target);
+            console.log(wrapper);
+            edges.forEach(edge => {
+              const item = buildSocioTr(edge.node);
+              wrapper.append(item);
+            });
+
+            if (scadenza) {
+              $('#soci-in-scadenza h3 button').removeClass('hidden');
+            }
+
+            if (hasNextPage) {
+              $(table).append($('<a target="_blank" href="/librosoci" class="float-right">Vedi tutti</a>'));
+            }
+          } else {
+            // show 'no results' message
+            $(target).append(
+              $(
+                `
+                <div class="no-results">
+                  <p>Ottimo, nessun socio in scadenza!</p>
+                </div>
+                `
+              )
+            );
+          }
+        })
+        .fail(err => {
+          console.log(err);
+          this.handleError();
+        })
+        .always(() => {
+          SociLoader.removeLoader(target);
+        });
+    });
+  }
+
+  fetchConsiglieri() {
+    $('.table-consiglio-direttivo').each((index, table) => {
+      const target = $(table).find('.lista-consiglieri');
+      $(target).empty();
+      SociLoader.addLoader(target);
+      const query = `
+        {
+          allSoci(consiglieri: true){
+            edges{
+              node{
+                id
+                nome
+                cognome
+                ruolo{
+                  ruolo
+                }
+                consigliereDal
+                emailconsigliere{
+                  email
+                }
+              }
+            }
+          }
+        }
+      `;
+
+      $.post({
+        url: '/graphql/',
+        data: JSON.stringify({ query }),
+        contentType: 'application/json'
+      })
+        .done(response => {
+          const { edges } = response.data.allSoci;
+          if (edges.length > 0) {
+            // populate panel with results
+            const wrapper = $(target);
+            console.log(wrapper);
+            edges.forEach(edge => {
+              const item = buildConsigliereTr(edge.node);
+              wrapper.append(item);
+            });
+          } else {
+            // show 'no results' message
+            $(target).append(
+              $(
+                `
+                <div class="no-results">
+                  <p>Ooops, nessun consigliere trovato!</p>
+                </div>
+                `
+              )
+            );
+          }
+        })
+        .fail(err => {
+          console.log(err);
+          this.handleError();
+        })
+        .always(() => {
+          SociLoader.removeLoader(target);
+        });
     });
   }
 
@@ -191,23 +186,11 @@ class SociLoader {
     );
   }
 
-  static removeLoader() {
-    $('#tutti-i-soci tbody')
+  static removeLoader(target) {
+    $(target)
       .find('.loader')
       .remove();
   }
-
-  cleanup() {
-    $('#tutti-i-soci tbody').empty();
-
-    this.state = {
-      infiniteScrollInit: false,
-      infiniteScrollEnabled: false,
-      lastItemId: null,
-      canFetchMore: false
-    };
-  }
 }
 
-const soci = new SociLoader();
-soci.init();
+export default new SociLoader();

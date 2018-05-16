@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'librosoci',
+    'elsahome',
+    'elsausers',
 
     'webpack_loader',
     'graphene_django',
@@ -69,6 +71,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'elsausers.middleware.LoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'elsagest.urls'
@@ -134,6 +137,13 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+
+LOGIN_URL = '/login/'
+LOGIN_EXEMPT_URLS = (
+    r'logout/$',
+)
+LOGIN_REDIRECT_URL = '/home/'
 
 
 # Static files (CSS, JavaScript, Images)

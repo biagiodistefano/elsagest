@@ -15,12 +15,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-import librosoci.views as soci_views
+from django.contrib.auth import views as auth_views
+import elsahome.views as home_views
+import elsausers.views as users_views
+import librosoci.views as librosoci_views
 from graphene_django.views import GraphQLView
+from django.views.generic import RedirectView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', soci_views.view, name='libro_soci'),
+    path('', RedirectView.as_view(url='home/', permanent=False)),
+    path('home/', home_views.view, name='home'),
+    path('librosoci/', librosoci_views.view, name='libro_soci'),
+    path('librosoci/aggiungisocio/', librosoci_views.aggiungi_socio, name="aggiungi_socio"),
     path('graphql/', GraphQLView.as_view(graphiql=True)),
+    path('login/', auth_views.login, {'template_name': 'elsausers/login.html'}, name='login'),
+    path('logout/', auth_views.logout, {'next_page': '/'}, name='logout'),
+    path('password/', users_views.change_password, name='change_password'),
 ]

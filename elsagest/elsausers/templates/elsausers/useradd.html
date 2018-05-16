@@ -1,0 +1,51 @@
+{% extends "base/base.html" %}
+{% block content %}
+
+<!-- temporaneo, in attesa di un custom template -->
+{% load render_bundle from webpack_loader %}
+
+{% block extra_css %}
+    {% render_bundle 'users_core' 'css' %}
+{% endblock %}
+
+<div class="login-clean">
+    <form method="post"> {% csrf_token %}
+        <h2 class="text-center">Registrati</h2>
+        {% for field in form %}
+        {% for error in field.errors %}
+        <p style="color: red; text-align: center">{{ error }}</p>
+        {% endfor %}
+        {% endfor %}
+
+        <div class="form-group">
+            <input class="form-control" type="text" name="username" maxlength="150" autofocus required id="id_username"
+                   placeholder="Username">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="email" name="email" maxlength="254" required id="id_email"
+                   placeholder="Email">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="email" name="email_conf" maxlength="254" required id="id_email_conf"
+                   placeholder="Conferma email">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="password" name="password1" required id="id_password1"
+                   placeholder="Password">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="password" name="password2" required id="id_password2"
+                   placeholder="Conferma password">
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary btn-block" type="submit">Registrati</button>
+        </div>
+        <a href="/login/" class="forgot">Sei già registrato? Accedi adesso</a>
+    </form>
+</div>
+{% endblock %}
+
+
+{% block extra_js %}
+    {% render_bundle 'users_core' 'js' %}
+{% endblock %}

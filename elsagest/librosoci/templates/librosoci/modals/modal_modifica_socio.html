@@ -1,0 +1,65 @@
+<div role="dialog" tabindex="-1" class="modal fade" id="modal-modifica-socio">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title">ELSA {{ user.userprofile.sezione.nome }} - nuovo Socio</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row form-aggiungi-socio">
+                        <form id="form-modifica-socio" action="#" method="post" class="form" role="form">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-xs-6 col-md-6">
+                                    <input class="form-control" name="nome" placeholder="Nome" type="text"
+                                           required autofocus/>
+                                </div>
+                                <div class="col-xs-6 col-md-6">
+                                    <input class="form-control" name="cognome" placeholder="Cognome" type="text"
+                                           required/>
+                                </div>
+                            </div>
+                            <input class="form-control" name="codice_fiscale" placeholder="Codice fiscale" type="text" required/>
+                            <input class="form-control" name="email" placeholder="Email" type="email" required/>
+                            <input class="form-control" name="numero_tessera" placeholder="Tessera n#" type="text" required/>
+                            <input id="data-iscrizione-modal-modifica-socio" class="form-control datepicker-modal" name="data_iscrizione" placeholder="Data iscrizione (gg-mm-aaaa)" type="text" required/>
+                            <input class="form-control" name="quotaiscrizione" placeholder="Quota iscrizione (EUR)" type="text" required/>
+                            <div class="row rinnovi-iscrizione-precedenti" id="modal-modifica-socio-rinnovi-precedenti">
+                                <input type="hidden" value="id"/>
+                                <div class="col-xs-6 col-md-6">
+                                    <input class="form-control datepicker-modal" name="ultimo_rinnovo" placeholder="Data rinnovo (dd-mm-aaaa)" type="text"
+                                           required autofocus/>
+                                </div>
+                                <div class="col-xs-6 col-md-6">
+                                    <input class="form-control" name="quota_rinnovo" placeholder="Quota rinnovo" type="text"
+                                           required/>
+                                </div>
+                            </div>
+
+                            <div class="row rinnovo-iscrizione">
+                                <div class="col-xs-6 col-md-6">
+                                    <input class="form-control datepicker-modal" name="ultimo_rinnovo" placeholder="Data rinnovo (dd-mm-aaaa)" type="text"
+                                           required autofocus/>
+                                </div>
+                                <div class="col-xs-6 col-md-6">
+                                    <input class="form-control" name="quota_rinnovo" placeholder="Quota rinnovo (EUR)" type="text"
+                                           required/>
+                                </div>
+                            </div>
+
+                            <br/>
+                            <br/>
+                            <button class="btn btn-lg btn-primary btn-block" type="submit">
+                                Salva
+                            </button>
+                        </form>
+                    <div id="form-modifica-socio-result"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal">Chiudi</button>
+            </div>
+        </div>
+    </div>
+</div>
