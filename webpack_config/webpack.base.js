@@ -19,7 +19,10 @@ module.exports = {
     extensions: ['.js', '.css', '.scss'],
     modules: [utils.cwd('elsagest'), utils.cwd('node_modules')],
     alias: {
-      elsagest: config.srcPath
+      elsagest: config.srcPath,
+      librosoci: `${config.srcPath}/librosoci/static/librosoci/`,
+      elsahome: `${config.srcPath}/elsahome/static/elsahome/`,
+      common: `${config.srcPath}/static/common/`
       // commonUtils: `${config.srcPath}/static/common/js/index`,
       // home: `${config.srcPath}/home/static/home/`,
       // giurisprudenza: `${config.srcPath}/giurisprudenza/static/giurisprudenza/`,

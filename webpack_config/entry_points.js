@@ -7,8 +7,9 @@ const entryPoints = {
   // common vendor modules
   vendor: config.vendor,
   // custom modules
-  // common: [path.join(__dirname, '..', 'les/static/common/js/index.js')],
-  // home: [path.join(__dirname, '..', 'les/home/static/home/js/index.js')],
+  common: [path.join(__dirname, '..', 'elsagest/static/common/js/index.js')],
+  librosoci: [path.join(__dirname, '..', 'elsagest/librosoci/static/librosoci/js/index.js')],
+  elsahome: [path.join(__dirname, '..', 'elsagest/elsahome/static/elsahome/js/index.js')],
   // giurisprudenza: [path.join(__dirname, '..', 'les/giurisprudenza/static/giurisprudenza/js/index.js')],
   // legislazione: [path.join(__dirname, '..', 'les/legislazione/static/legislazione/js/index.js')],
   // lawyertools: [path.join(__dirname, '..', 'les/lawyertools/static/lawyertools/js/index.js')]
