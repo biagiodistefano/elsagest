@@ -1,5 +1,5 @@
-import './soci-loader';
 import './aggiungi-socio';
+import SociLoader from './soci-loader';
 
 
 $('#btn-aggiungi-socio').on('click', () => {
@@ -22,3 +22,6 @@ $('.datepicker-modal').datepicker({
   //endDate: lastDay.toDate(),
   ignoreReadonly: true
 });
+
+// eslint-disable-next-line no-new
+new SociLoader();

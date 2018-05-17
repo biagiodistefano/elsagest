@@ -1,38 +1,45 @@
-import config from './config';
 import buildSocioTr from './build-socio-tr';
 import buildConsigliereTr from './build-consigliere-tr';
 
-class SociLoader {
+const deltaScrollPx = 30;
+
+export default class SociLoader {
   constructor() {
     this.init();
   }
 
   init() {
+    this.cleanup();
     this.fetchSoci();
     this.fetchConsiglieri();
   }
 
-  fetchSoci() {
+  fetchSoci(empty) {
     $('.table-soci').each((index, table) => {
       const target = $(table).find('.lista-soci');
+      if (empty) {
+        $(target).empty();
+      }
+      const infiniteScroll = $(target).attr('data-infinite-scroll');
+      SociLoader.addLoader(target);
 
-      $(target).empty();
-
-      let first = '';
       let scadenza = '';
+      let first = '';
+      const after = `after: "${this.state.lastItemId || ''}"`;
+      const limit = $(target).attr('data-first');
+      console.log(limit);
 
-      if ($(target).attr('data-first')) {
-        first = `first: ${config.SOCI_MIN_RESULTS}`;
+      if (limit) {
+        first = `first: ${parseInt(limit, 10)}`;
       }
       if ($(target).attr('data-scadenza')) {
         scadenza = 'scadenza: true';
       }
 
       const orderby = 'orderby: "cognome"';
+      const settings = [first, scadenza, orderby, after].join(', ');
+      const showSezione = $(table).find('.elsa-italia').val();
 
-      const settings = [first, scadenza, orderby].join(', ');
-
-      SociLoader.addLoader(target);
       const query = `
         {
           allSoci(
@@ -48,9 +55,14 @@ class SociLoader {
                   dataIscrizione
                   ultimoRinnovo
                   scadenzaIscrizione
+                  sezione{
+                    nome
+                  }
                 }
               }
               pageInfo {
+                startCursor
+                endCursor
                 hasNextPage
               }
             }
@@ -63,15 +75,22 @@ class SociLoader {
         contentType: 'application/json'
       })
         .done(response => {
-          console.log(response.data);
+          const { infiniteScrollInit } = this.state;
           const { pageInfo, edges } = response.data.allSoci;
-          const { hasNextPage } = pageInfo;
+          const { hasNextPage, endCursor } = pageInfo;
+
+          // update local data structures with graphql help
+          this.state.canFetchMore = hasNextPage;
+          if (!scadenza) {
+            this.state.lastItemId = endCursor || null;
+          }
+
+          SociLoader.removeLoader(target);
           if (edges.length > 0) {
             // populate panel with results
             const wrapper = $(target);
-            console.log(wrapper);
             edges.forEach(edge => {
-              const item = buildSocioTr(edge.node);
+              const item = buildSocioTr(edge.node, showSezione);
               wrapper.append(item);
             });
 
@@ -79,9 +98,18 @@ class SociLoader {
               $('#soci-in-scadenza h3 button').removeClass('hidden');
             }
 
-            if (hasNextPage) {
+            if (hasNextPage && scadenza) {
               $(table).append($('<a target="_blank" href="/librosoci" class="float-right">Vedi tutti</a>'));
             }
+
+            // init infinite scroll
+            if (!infiniteScrollInit && infiniteScroll) {
+              this.state.infiniteScrollInit = true;
+              this.state.infiniteScrollEnabled = true;
+              this.initInfiniteScroll();
+            }
+            // enable infinite scroll again
+            this.state.infiniteScrollEnabled = true;
           } else {
             // show 'no results' message
             $(target).append(
@@ -96,6 +124,7 @@ class SociLoader {
           }
         })
         .fail(err => {
+          SociLoader.removeLoader(target);
           console.log(err);
           this.handleError();
         })
@@ -169,6 +198,22 @@ class SociLoader {
     });
   }
 
+  initInfiniteScroll() {
+    $(window).scroll(() => {
+      const { infiniteScrollEnabled, canFetchMore } = this.state;
+      if (
+        infiniteScrollEnabled &&
+        canFetchMore &&
+        ($(window).scrollTop() + $(window).height() > $(document).height() - deltaScrollPx)
+      ) {
+        // fetch additional items
+        console.log(this.state);
+        this.state.infiniteScrollEnabled = false;
+        this.fetchSoci(false);
+      }
+    });
+  }
+
   handleError() {
     // prevent infinite scroll from triggering
     this.state.infiniteScrollEnabled = false;
@@ -191,6 +236,13 @@ class SociLoader {
       .find('.loader')
       .remove();
   }
-}
 
-export default new SociLoader();
+  cleanup() {
+    this.state = {
+      infiniteScrollInit: false,
+      infiniteScrollEnabled: false,
+      lastItemId: null,
+      canFetchMore: false
+    };
+  }
+}

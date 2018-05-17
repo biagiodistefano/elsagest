@@ -2,6 +2,7 @@ from datetime import date, timedelta
 import random
 import sqlite3
 import argparse
+import re
 
 argument_parser = argparse.ArgumentParser()
 argument_parser.add_argument('--dry', action="store_true", help="Do not update db")
@@ -29,16 +30,18 @@ sezioni = "Nessuna - Italia - Bari - Benevento - Bologna - Brescia - Cagliari - 
 sezioni = [s.strip() for s in sezioni.split('-')]
 
 
-ruoli = ["Presidente", "Segretario Generale", "Tesoriere", "VP Marketing",
+ruoli = ["Socio", "Presidente", "Segretario Generale", "Tesoriere", "VP Marketing",
          "VP Attività Accademiche", "VP Seminari e Conferenze", "VP STEP",
          "Director IM", "Director Tesoreria", "Director Marketing", "Director Attività Accademiche",
          "Director Seminari e Conferenze", "Director STEP"]
 
+ruoli += [r + " Nazionale" for r in ruoli if r != "Socio"]
+
 
 def genera_ruoli():
     with conn:
-        for ruolo in ruoli:
-            cur.execute("""INSERT INTO ruoli_consiglieri (ruolo) VALUES (?)""", (ruolo, ))
+        for i, ruolo in enumerate(ruoli):
+            cur.execute("""INSERT INTO ruoli_consiglieri (id, ruolo) VALUES (?, ?)""", (i, ruolo, ))
 
 
 def genera_socio_random(numero_tessera, sezione_id):
@@ -54,6 +57,7 @@ def genera_socio_random(numero_tessera, sezione_id):
         sezione_id=sezione_id
     )
     socio['email'] = "".join(f"{socio['nome']}.{socio['cognome']}{random.randint(1, 100)}@example.com".lower().split())
+    socio['email'] = re.sub(r"[,']", r"", socio["email"])
     scadenza_iscrizione = socio["data_iscrizione"] + timedelta(days=364)
     if scadenza_iscrizione < date.today():
         if random.choice([True, False]):
@@ -69,30 +73,38 @@ def genera_socio_random(numero_tessera, sezione_id):
 
 
 def genera_consigli_direttivi():
+    consigli_direttivi = []
     for nome_sezione in sezioni:
-        if nome_sezione in ["Nessuna", "Italia"]:
+        if nome_sezione in ["Nessuna"]:
             continue
-        ruoli = list(range(1, 14))
+        ruoli = ["presidente", "secgen", "tesoreria", "vpmarketing", "vpaa", "vpsc", "vpstep", "dirim", "dirtes", "dirmkt", "diraa", "dirsc", "dirstep"]
+        ruoli = list(zip(ruoli, range(1, 14)))
         random.shuffle(ruoli)
-        sezione_id = cur.execute("SELECT id FROM sezioni_elsa WHERE nome=?", (nome_sezione, )).fetchone()[0]
-        id_soci_sezione = [row[0] for row in cur.execute("SELECT id FROM soci WHERE sezione_id=?", (sezione_id,))]
+        sezione_id = cur.execute("SELECT id FROM sezioni_elsa WHERE nome=?", (nome_sezione,)).fetchone()[0]
+        if nome_sezione != "Italia":
+            id_soci_sezione = [row[0] for row in cur.execute("SELECT id FROM soci WHERE sezione_id=?", (sezione_id,))]
+        else:
+            id_soci_sezione = [row[0] for row in cur.execute("SELECT id FROM soci") if row[0] not in consigli_direttivi]
         with conn:
             while ruoli:
-                consigliere = random.choice(id_soci_sezione)
-                id_soci_sezione.remove(consigliere)
-                ruolo = ruoli.pop()
+                socio_id = random.choice(id_soci_sezione)
+                id_soci_sezione.remove(socio_id)
+                consigli_direttivi.append(socio_id)
+                short, ruolo_id = ruoli.pop()
+                if nome_sezione == "Italia":
+                    ruolo_id += 13
                 cur.execute(
                     """
                     UPDATE soci
                     SET ruolo_id=?, consigliere_dal=?
                     WHERE id=?
-                    """, (ruolo, date.today() - timedelta(days=160), consigliere)
+                    """, (ruolo_id, date.today() - timedelta(days=160), socio_id)
                 )
-                email = "".join(f"{ruolo}@elsa-{nome_sezione}.org".split())
+                email = "".join(f"{short}@elsa-{nome_sezione}.org".split()).lower()
                 cur.execute(
                     """
                     INSERT INTO email_consiglieri (email, ruolo_id, socio_id) VALUES (?, ?, ?)
-                    """, (email, ruolo, consigliere)
+                    """, (email, ruolo_id, socio_id)
                 )
 
 
@@ -108,14 +120,14 @@ def genera_sezioni():
                 continue
 
             sezione_id = cur.lastrowid
-            for x in range(random.randint(30, 150)):
+            for x in range(random.randint(50, 200)):
                 socio = genera_socio_random(x, sezione_id=sezione_id)
                 cur.execute(
                     """
                     INSERT INTO soci (
-                      nome, cognome, email, data_di_nascita, data_iscrizione, codice_fiscale, sezione_id,
+                      nome, cognome, email, data_iscrizione, codice_fiscale, sezione_id,
                       scadenza_iscrizione, attivo, data_creazione, ruolo_id, numero_tessera, ultimo_rinnovo
-                    ) VALUES (:nome, :cognome, :email, :data_di_nascita, :data_iscrizione, :codice_fiscale,
+                    ) VALUES (:nome, :cognome, :email, :data_iscrizione, :codice_fiscale,
                     :sezione_id, :scadenza_iscrizione, :attivo, CURRENT_TIMESTAMP, :ruolo_id, :numero_tessera, :ultimo_rinnovo)
                     """, socio
                 )

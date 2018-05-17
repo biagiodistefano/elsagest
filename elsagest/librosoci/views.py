@@ -8,6 +8,11 @@ from datetime import date, datetime, timedelta
 
 
 def view(request):
+
+    context = {
+        "sezione": request.user.userprofile.sezione
+    }
+
     return render(request, 'librosoci/libro_soci.html')
 
 
@@ -36,6 +41,7 @@ def aggiungi_socio(request):
             print("Something went wrong!")
             #return JsonResponse({"success": False})
             raise
+
 
 def modifica_socio(request):
     if request.method == "POST":

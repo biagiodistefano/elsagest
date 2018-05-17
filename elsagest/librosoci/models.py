@@ -39,7 +39,7 @@ class Socio(models.Model):
     scadenza_iscrizione = models.DateField()
     ultimo_rinnovo = models.DateField(auto_now_add=True)
     attivo = models.BooleanField(default=True)
-    ruolo = models.ForeignKey(Consigliere, on_delete=models.DO_NOTHING)
+    ruolo = models.ForeignKey(Consigliere, null=True, blank=True, on_delete=models.SET_NULL)
     consigliere_dal = models.DateField(null=True)
     data_creazione = models.DateTimeField(auto_now_add=True)
 
@@ -108,6 +108,9 @@ class ModificheSoci(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sezione = models.ForeignKey(SezioneElsa, on_delete=models.CASCADE, default=1)
+
+    def __str__(self):
+        return f"Profilo di {self.user.username}"
 
 
 @receiver(post_save, sender=User)

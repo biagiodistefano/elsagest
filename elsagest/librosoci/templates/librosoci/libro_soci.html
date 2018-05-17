@@ -9,8 +9,11 @@
 {% block content %}
 <div class="container">
     <div class="page-header">
-        <h2 class="text-center">Libro soci di ELSA {{ user.userprofile.sezione.nome }}</h2>
+        <h2 class="text-center">Libro soci di ELSA {{ sezione.nome }}</h2>
     </div>
+
+    {% if sezione.nome != Italia %}
+
     <div id="soci-in-scadenza">
         <div class="page-header">
             <h3>Iscrizioni in scadenza e scadute
@@ -36,14 +39,22 @@
             </table>
         </div>
     </div>
+    {% endif %}
 
     <div id="tutti-i-soci">
         <div class="page-header">
             <h3>Tutti i soci
+                {% if sezione.nome != Italia %}
                 <button class="btn btn-primary float-right" id="btn-aggiungi-socio" type="button">Nuovo socio</button>
+                {% endif %}
             </h3>
         </div>
         <div class="table-responsive table-soci">
+            {% if sezione.nome == Italia %}
+            <input type="hidden" class="elsa-italia" value="true">
+            {% else %}
+            <input type="hidden" class="elsa-italia" value="false">
+            {% endif %}
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -52,11 +63,16 @@
                     <th>Tessera n.</th>
                     <th>email</th>
                     <th>socio dal</th>
+                    {% if sezione.nome != Italia %}
                     <th>ultimo rinnovo</th>
+                    {% endif %}
                     <th>scadenza iscrizione</th>
+                    {% if sezione.nome == Italia %}
+                    <th>Sezione</th>
+                    {% endif %}
                 </tr>
                 </thead>
-                <tbody class="lista-soci">
+                <tbody class="lista-soci" data-first="100" data-infinite-scroll="true">
 
                 </tbody>
             </table>
@@ -64,8 +80,10 @@
     </div>
 </div>
 
+{% if sezione.nome != Italia %}
 {% include 'librosoci/modals/modal_aggiungi_socio.html' %}
 {% include 'librosoci/modals/modal_modifica_socio.html' %}
+{% endif %}
 
 {% endblock %}
 

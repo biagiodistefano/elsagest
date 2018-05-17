@@ -1,7 +1,7 @@
 import moment from 'moment';
 import config from './config';
 
-export default socio => {
+export default (socio, showSezione) => {
   const tr = $(`<tr>
             <input type="hidden" value="${socio.id}">
             <td class="cognome">${socio.cognome}</td>
@@ -12,6 +12,10 @@ export default socio => {
             <td class="ultimo-rinnovo">${socio.ultimoRinnovo}</td>
             <td class="scadenza-iscrizione">${socio.scadenzaIscrizione}</td>
         </tr>`);
+  if (showSezione) {
+    $(tr).append(`<td class="sezione">${socio.sezione.nome}</td>`);
+    $(tr).find('.ultimo-rinnovo').remove();
+  }
   const scadenza = moment(socio.scadenzaIscrizione, config.MOMENT_DATE_FORMAT);
   if (scadenza.isBefore(moment())) {
     $(tr).addClass('danger');
