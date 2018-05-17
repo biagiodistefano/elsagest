@@ -22,6 +22,7 @@ module.exports = {
       elsagest: config.srcPath,
       librosoci: `${config.srcPath}/librosoci/static/librosoci/`,
       elsahome: `${config.srcPath}/elsahome/static/elsahome/`,
+      elsausers: `${config.srcPath}/elsausers/static/elsausers/`,
       common: `${config.srcPath}/static/common/`
       // commonUtils: `${config.srcPath}/static/common/js/index`,
       // home: `${config.srcPath}/home/static/home/`,
