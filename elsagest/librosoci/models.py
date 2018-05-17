@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from simple_history.models import HistoricalRecords
+
 
 # Create your models here.
 
@@ -9,6 +11,7 @@ from django.dispatch import receiver
 class SezioneElsa(models.Model):
     nome = models.TextField()
     users = models.ManyToManyField(User)
+    history = HistoricalRecords()
 
     class Meta:
         db_table = "sezioni_elsa"
@@ -36,12 +39,14 @@ class Socio(models.Model):
     codice_fiscale = models.TextField()
     email = models.EmailField()
     data_iscrizione = models.DateField()
+    quota_iscrizione = models.FloatField()
     scadenza_iscrizione = models.DateField()
     ultimo_rinnovo = models.DateField(auto_now_add=True)
     attivo = models.BooleanField(default=True)
     ruolo = models.ForeignKey(Consigliere, null=True, blank=True, on_delete=models.SET_NULL)
     consigliere_dal = models.DateField(null=True)
     data_creazione = models.DateTimeField(auto_now_add=True)
+    history = HistoricalRecords()
 
     class Meta:
         db_table = "soci"
@@ -53,6 +58,7 @@ class EmailConsigliere(models.Model):
     email = models.EmailField()
     ruolo = models.ForeignKey(Consigliere, on_delete=models.CASCADE)
     socio = models.OneToOneField(Socio, null=True, blank=True, on_delete=models.DO_NOTHING)
+    history = HistoricalRecords()
 
     class Meta:
         db_table = "email_consiglieri"
@@ -64,61 +70,9 @@ class RinnovoIscrizione(models.Model):
     socio = models.ForeignKey(Socio, on_delete=models.DO_NOTHING)
     data_rinnovo = models.DateField()
     quota_rinnovo = models.FloatField()
+    history = HistoricalRecords()
 
     class Meta:
         db_table = "rinnovi"
         verbose_name = "Rinnovo iscrizione"
         verbose_name_plural = "Rinnovi iscrizioni"
-
-
-class ModificheRinnovoSoci(models.Model):
-    socio = models.ForeignKey(Socio, on_delete=models.DO_NOTHING)
-    data_rinnovo = models.DateField()
-    quota_rinnovo = models.FloatField()
-    rinnovo_iscrizione = models.ForeignKey(RinnovoIscrizione, on_delete=models.DO_NOTHING)
-
-    class Meta:
-        db_table = "modifiche_rinnovi"
-        verbose_name = "Modifica rinnovo iscrizione"
-        verbose_name_plural = "Modifiche rinnovi iscrizioni"
-
-
-class ModificheSoci(models.Model):
-    nome = models.TextField()
-    cognome = models.TextField()
-    sezione = models.ForeignKey(SezioneElsa, on_delete=models.DO_NOTHING)
-    data_di_nascita = models.DateField()
-    codice_fiscale = models.TextField()
-    email = models.EmailField()
-    data_iscrizione = models.DateField()
-    scadenza_iscrizione = models.DateField()
-    attivo = models.BooleanField(default=True)
-    ruolo = models.ForeignKey(Consigliere, on_delete=models.DO_NOTHING)
-    data_creazione = models.DateTimeField()
-    dati_dal = models.DateTimeField()
-    dati_al = models.DateTimeField(auto_now_add=True)
-    socio = models.ForeignKey(Socio, on_delete=models.DO_NOTHING)
-
-    class Meta:
-        db_table = "modifiche_soci"
-        verbose_name = "Modifica socio"
-        verbose_name_plural = "Modifiche soci"
-
-
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    sezione = models.ForeignKey(SezioneElsa, on_delete=models.CASCADE, default=1)
-
-    def __str__(self):
-        return f"Profilo di {self.user.username}"
-
-
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance)
-
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.userprofile.save()

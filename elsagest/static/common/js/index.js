@@ -1,3 +1,4 @@
+import '../css/common.scss';
 import './helpers/csrf';
 import './helpers/date-picker';
 import './helpers/copy-tooltip-handler';

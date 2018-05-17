@@ -12,13 +12,17 @@
         <h2 class="text-center">Libro soci di ELSA {{ sezione.nome }}</h2>
     </div>
 
-    {% if sezione.nome != Italia %}
+    {% if sezione.nome != "Italia" %}
 
     <div id="soci-in-scadenza">
         <div class="page-header">
+            <form id="email-promemoria">
             <h3>Iscrizioni in scadenza e scadute
-                <button class="btn btn-primary hidden float-right" type="button">Invia promemoria</button>
+                    {% csrf_token %}
+                <button class="btn btn-primary hidden float-right email-promemoria" type="submit">Invia promemoria</button>
+
             </h3>
+            </form>
         </div>
         <div class="table-responsive table-soci">
             <table class="table table-striped">
@@ -44,13 +48,13 @@
     <div id="tutti-i-soci">
         <div class="page-header">
             <h3>Tutti i soci
-                {% if sezione.nome != Italia %}
+                {% if sezione.nome != "Italia" %}
                 <button class="btn btn-primary float-right" id="btn-aggiungi-socio" type="button">Nuovo socio</button>
                 {% endif %}
             </h3>
         </div>
         <div class="table-responsive table-soci">
-            {% if sezione.nome == Italia %}
+            {% if sezione.nome == "Italia" %}
             <input type="hidden" class="elsa-italia" value="true">
             {% else %}
             <input type="hidden" class="elsa-italia" value="false">
@@ -63,11 +67,11 @@
                     <th>Tessera n.</th>
                     <th>email</th>
                     <th>socio dal</th>
-                    {% if sezione.nome != Italia %}
+                    {% if sezione.nome != "Italia" %}
                     <th>ultimo rinnovo</th>
                     {% endif %}
                     <th>scadenza iscrizione</th>
-                    {% if sezione.nome == Italia %}
+                    {% if sezione.nome == "Italia" %}
                     <th>Sezione</th>
                     {% endif %}
                 </tr>
@@ -80,7 +84,7 @@
     </div>
 </div>
 
-{% if sezione.nome != Italia %}
+{% if sezione.nome != "Italia" %}
 {% include 'librosoci/modals/modal_aggiungi_socio.html' %}
 {% include 'librosoci/modals/modal_modifica_socio.html' %}
 {% endif %}
@@ -89,4 +93,6 @@
 
 {% block extra_js %}
 {% render_bundle 'librosoci' 'js' %}
+{% render_bundle 'common' 'js' %}
+{% render_bundle 'elsausers' 'js' %}
 {% endblock %}

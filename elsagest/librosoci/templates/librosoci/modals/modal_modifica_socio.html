@@ -1,65 +1,90 @@
 <div role="dialog" tabindex="-1" class="modal fade" id="modal-modifica-socio">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">×</span></button>
-                <h4 class="modal-title">ELSA {{ user.userprofile.sezione.nome }} - nuovo Socio</h4>
-            </div>
-            <div class="modal-body">
-                <div class="row form-aggiungi-socio">
-                        <form id="form-modifica-socio" action="#" method="post" class="form" role="form">
-                            {% csrf_token %}
-                            <div class="row">
-                                <div class="col-xs-6 col-md-6">
-                                    <input class="form-control" name="nome" placeholder="Nome" type="text"
-                                           required autofocus/>
-                                </div>
-                                <div class="col-xs-6 col-md-6">
-                                    <input class="form-control" name="cognome" placeholder="Cognome" type="text"
-                                           required/>
-                                </div>
+            <form id="form-modifica-socio" action="#" method="post" class="form" role="form">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">ELSA {{ user.userprofile.sezione.nome }} - modifica Socio</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row form-info-socio">
+
+                        {% csrf_token %}
+                        <input type="hidden" name="id">
+                        <div class="row">
+                            <div class="col-xs-6 col-md-6">
+                                <label>Nome</label>
+                                <input class="form-control" name="nome" placeholder="Nome" type="text"
+                                       required autofocus/>
                             </div>
-                            <input class="form-control" name="codice_fiscale" placeholder="Codice fiscale" type="text" required/>
-                            <input class="form-control" name="email" placeholder="Email" type="email" required/>
-                            <input class="form-control" name="numero_tessera" placeholder="Tessera n#" type="text" required/>
-                            <input id="data-iscrizione-modal-modifica-socio" class="form-control datepicker-modal" name="data_iscrizione" placeholder="Data iscrizione (gg-mm-aaaa)" type="text" required/>
-                            <input class="form-control" name="quotaiscrizione" placeholder="Quota iscrizione (EUR)" type="text" required/>
-                            <div class="row rinnovi-iscrizione-precedenti" id="modal-modifica-socio-rinnovi-precedenti">
+                            <div class="col-xs-6 col-md-6">
+                                <label>Cognome</label>
+                                <input class="form-control" name="cognome" placeholder="Cognome" type="text"
+                                       required/>
+                            </div>
+                        </div>
+                        <label>Codice Fiscale</label>
+                        <input class="form-control" name="codice_fiscale" placeholder="Codice fiscale" type="text"
+                               required/>
+                        <label>Email</label>
+                        <input class="form-control" name="email" placeholder="Email" type="email" required/>
+                        <label>Tessra n#</label>
+                        <input class="form-control" name="numero_tessera" placeholder="Tessera n#" type="text"
+                               required/>
+                        <label>Data iscrizione</label>
+                        <input id="data-iscrizione-modal-modifica-socio" class="form-control datepicker-modal"
+                               name="data_iscrizione" placeholder="Data iscrizione (gg-mm-aaaa)" type="text" required/>
+                        <label>Quota iscrizione</label>
+                        <input class="form-control" name="quota_iscrizione" placeholder="Quota iscrizione (EUR)"
+                               type="text" required/>
+                        <div class="row rinnovo-iscrizione">
+                            <button class="btn btn-default btn-nuovo-rinnovo" data-action="add" type="button">Nuovo rinnovo</button>
+                            <!--
+                            <div class="nuovo-rinnovo">
+                            <div class="col-xs-6 col-md-6">
+                                <input class="form-control datepicker-modal" name="data_nuovo_rinnovo"
+                                       placeholder="Data rinnovo (dd-mm-aaaa)" type="text"
+                                        autofocus/>
+                            </div>
+                            <div class="col-xs-6 col-md-6">
+                                <input class="form-control" name="quota_nuovo_rinnovo" placeholder="Quota rinnovo (EUR)"
+                                       type="text"
+                                       />
+                            </div>
+                            </div>
+                            -->
+                        </div>
+                        <div class="row rinnovi-iscrizione-precedenti">
+                            <!--
+                            <div class="rinnovo-precedente">
                                 <input type="hidden" value="id"/>
                                 <div class="col-xs-6 col-md-6">
-                                    <input class="form-control datepicker-modal" name="ultimo_rinnovo" placeholder="Data rinnovo (dd-mm-aaaa)" type="text"
+                                    <input class="form-control datepicker-modal" name="data_rinnovo"
+                                           placeholder="Data rinnovo (dd-mm-aaaa)" type="text"
                                            required autofocus/>
                                 </div>
                                 <div class="col-xs-6 col-md-6">
-                                    <input class="form-control" name="quota_rinnovo" placeholder="Quota rinnovo" type="text"
+                                    <input class="form-control" name="quota_rinnovo" placeholder="Quota rinnovo (EUR)"
+                                           type="text"
                                            required/>
                                 </div>
                             </div>
+                            -->
+                        </div>
 
-                            <div class="row rinnovo-iscrizione">
-                                <div class="col-xs-6 col-md-6">
-                                    <input class="form-control datepicker-modal" name="ultimo_rinnovo" placeholder="Data rinnovo (dd-mm-aaaa)" type="text"
-                                           required autofocus/>
-                                </div>
-                                <div class="col-xs-6 col-md-6">
-                                    <input class="form-control" name="quota_rinnovo" placeholder="Quota rinnovo (EUR)" type="text"
-                                           required/>
-                                </div>
-                            </div>
+                        <br/>
+                        <br/>
 
-                            <br/>
-                            <br/>
-                            <button class="btn btn-lg btn-primary btn-block" type="submit">
-                                Salva
-                            </button>
-                        </form>
-                    <div id="form-modifica-socio-result"></div>
+                        <div id="form-modifica-socio-result"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-default" type="button" data-dismiss="modal">Chiudi</button>
-            </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default btn-primary" type="submit">Salva</button>
+                    <button class="btn btn-default btn-warning" type="button" id="ripristina-info-socio">Ripristina</button>
+                    <button class="btn btn-default" id="chiudi-modal-modifica-socio" type="button" data-dismiss="modal">Chiudi</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

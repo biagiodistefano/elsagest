@@ -54,7 +54,8 @@ def genera_socio_random(numero_tessera, sezione_id):
         codice_fiscale="XXXXXX00XXXX11991",
         ruolo_id=0,
         attivo=1,
-        sezione_id=sezione_id
+        sezione_id=sezione_id,
+        quota_iscrizione=10
     )
     socio['email'] = "".join(f"{socio['nome']}.{socio['cognome']}{random.randint(1, 100)}@example.com".lower().split())
     socio['email'] = re.sub(r"[,']", r"", socio["email"])
@@ -103,7 +104,7 @@ def genera_consigli_direttivi():
                 email = "".join(f"{short}@elsa-{nome_sezione}.org".split()).lower()
                 cur.execute(
                     """
-                    INSERT INTO email_consiglieri (email, ruolo_id, socio_id) VALUES (?, ?, ?)
+                    INSERT OR IGNORE INTO email_consiglieri (email, ruolo_id, socio_id) VALUES (?, ?, ?)
                     """, (email, ruolo_id, socio_id)
                 )
 
@@ -126,9 +127,9 @@ def genera_sezioni():
                     """
                     INSERT INTO soci (
                       nome, cognome, email, data_iscrizione, codice_fiscale, sezione_id,
-                      scadenza_iscrizione, attivo, data_creazione, ruolo_id, numero_tessera, ultimo_rinnovo
+                      scadenza_iscrizione, attivo, data_creazione, ruolo_id, numero_tessera, ultimo_rinnovo, quota_iscrizione
                     ) VALUES (:nome, :cognome, :email, :data_iscrizione, :codice_fiscale,
-                    :sezione_id, :scadenza_iscrizione, :attivo, CURRENT_TIMESTAMP, :ruolo_id, :numero_tessera, :ultimo_rinnovo)
+                    :sezione_id, :scadenza_iscrizione, :attivo, CURRENT_TIMESTAMP, :ruolo_id, :numero_tessera, :ultimo_rinnovo, :quota_iscrizione)
                     """, socio
                 )
 

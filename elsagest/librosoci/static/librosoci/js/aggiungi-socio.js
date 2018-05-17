@@ -1,4 +1,7 @@
-import SociLoader from './soci-loader';
+$('#btn-aggiungi-socio').on('click', () => {
+  $('#modal-aggiungi-socio').modal('show');
+});
+
 
 $('#form-aggiungi-socio').submit(event => {
   event.preventDefault();
@@ -15,7 +18,7 @@ $('#form-aggiungi-socio').submit(event => {
     if (success) {
       $(formResult).append($('<h4 class="text-center text-success bg-success">Nuovo socio aggiunto!</h4>'));
       $('#form-aggiungi-socio').trigger('reset');
-      SociLoader.fetchSoci();
+      //SociLoader.fetchSoci();
     } else {
       $(formResult).append($('<h4 class="text-center text-danger bg-danger">Si è verificato un errore</h4>'));
     }

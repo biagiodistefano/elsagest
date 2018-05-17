@@ -1,5 +1,4 @@
 from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import render, redirect
@@ -10,11 +9,15 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import Group
+from django.core.mail import send_mail, get_connection
+from django.http import JsonResponse
+from cryptography.fernet import Fernet
 
-from users_core.forms import SignUpForm
-from users_core.tokens import account_activation_token
+from .forms import SignUpForm
+from .tokens import account_activation_token
+from .models import EmailCredentials
 
-@login_required
+
 def home(request):
     return redirect('/')
 
@@ -83,3 +86,76 @@ def change_password(request):
     return render(request, 'elsausers/change_password.html', {
         'form': form
     })
+
+
+def user_send_email(request):
+    user = request.user
+    emailcred = user.userprofile.emailcredentials
+    if request.method == 'POST':
+        connection = get_connection(
+            host=emailcred.host,
+            port=emailcred.port,
+            username=emailcred.username,
+            password=emailcred.password,
+            use_tls=emailcred.tls)
+
+        send_mail(
+            'Subject here',
+            'Here is the message.',
+            emailcred.username,
+            ['biagiodistefano92@gmail.com'],
+            fail_silently=False,
+            connection=connection
+        )
+        print("OK!")
+        return JsonResponse({"success": "true", "message": "Email inviata correttamente"})
+
+
+def settings_view(request):
+    user = request.user
+    if request.method == 'POST':
+        try:
+            post = request.POST
+
+            username = post.get("email")
+            port = post.get("port")
+            host = post.get("host")
+            password = post.get("password")
+            tls = post.get("tls") == "on"
+
+            try:
+                credentials = user.userprofile.emailcredentials
+                credentials.username = username
+                credentials.port = port
+                credentials.host = host
+                credentials.tls = tls
+                if password:
+                    credentials.password = password
+                try:
+                    get_connection(host=host, port=port, username=username, password=password, use_tls=True)
+                    credentials.save()
+                    return JsonResponse({"success": True, "message": "Impostazioni aggiornate!"})
+                except Exception as e:
+                    return JsonResponse({"success": False, "message": f"Impossibile accedere: {e}"})
+
+            except:
+                if password:
+                    credentials = EmailCredentials.objects.create(
+                        user=user.userprofile,
+                        username=username,
+                        port=port,
+                        tls=tls,
+                        host=host,
+                        password=password)
+                    get_connection(host=host, port=port, username=username, password=password, use_tls=True)
+                    credentials.save()
+                    return JsonResponse({"success": True, "message": "Impostazioni aggiornate!"})
+                else:
+                    return JsonResponse({"success": False, "message": "Specificare una password"})
+
+        except Exception as e:
+            #return JsonResponse({"success": False, "message": str(e)})
+            raise
+
+    else:
+        return render(request, 'elsausers/settings.html')

@@ -8,7 +8,7 @@ export default consigliere => {
             <td class="nome">${nome}</td>
             <td class="ruolo">${ruolo.ruolo}</td>
             <td class="email">${emailconsigliere.email}</td>
-            <td class="consigliere-dal">${consigliereDal}</td>
+            <td class="consigliere-dal">${consigliereDal.split('-').reverse().join('-')}</td>
         </tr>`);
   return item;
 };

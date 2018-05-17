@@ -22,28 +22,30 @@ WEBPACK_LOADER = {
     }
 }
 
-
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static/').replace("\\", "/"),
 )
 
-
 GRAPHENE = {
-    'SCHEMA': 'elsagest.schema.schema'
+    'SCHEMA': 'elsagest.schema.schema',
+    'MIDDLEWARE': [
+        'graphene_django_extras.ExtraGraphQLDirectiveMiddleware'
+    ]
 }
 
+DATE_FORMAT = "%d-%m-%Y"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'cvon$=@2x81poac5n9-keol(oby-2%%(rfc=d^x_hydkh3w2fr'
+PWD_KEY = b'_v9pwPL-PrDCTmBXSeIGYxt5COFHmGGtzq3v_LTpBAk='  # TODO: SECURITY ISSUE!!
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -61,6 +63,7 @@ INSTALLED_APPS = [
 
     'webpack_loader',
     'graphene_django',
+    'simple_history'
 ]
 
 MIDDLEWARE = [
@@ -72,6 +75,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'elsausers.middleware.LoginRequiredMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'elsagest.urls'
@@ -93,7 +97,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'elsagest.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
@@ -124,7 +127,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
@@ -138,13 +140,11 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 LOGIN_URL = '/login/'
 LOGIN_EXEMPT_URLS = (
     r'logout/$',
 )
 LOGIN_REDIRECT_URL = '/home/'
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/

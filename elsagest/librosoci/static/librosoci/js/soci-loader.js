@@ -27,7 +27,6 @@ export default class SociLoader {
       let first = '';
       const after = `after: "${this.state.lastItemId || ''}"`;
       const limit = $(target).attr('data-first');
-      console.log(limit);
 
       if (limit) {
         first = `first: ${parseInt(limit, 10)}`;
@@ -38,7 +37,7 @@ export default class SociLoader {
 
       const orderby = 'orderby: "cognome"';
       const settings = [first, scadenza, orderby, after].join(', ');
-      const showSezione = $(table).find('.elsa-italia').val();
+      const showSezione = $(table).find('.elsa-italia').val() === 'true';
 
       const query = `
         {
@@ -123,9 +122,8 @@ export default class SociLoader {
             );
           }
         })
-        .fail(err => {
+        .fail(() => {
           SociLoader.removeLoader(target);
-          console.log(err);
           this.handleError();
         })
         .always(() => {
@@ -170,7 +168,6 @@ export default class SociLoader {
           if (edges.length > 0) {
             // populate panel with results
             const wrapper = $(target);
-            console.log(wrapper);
             edges.forEach(edge => {
               const item = buildConsigliereTr(edge.node);
               wrapper.append(item);
@@ -188,8 +185,7 @@ export default class SociLoader {
             );
           }
         })
-        .fail(err => {
-          console.log(err);
+        .fail(() => {
           this.handleError();
         })
         .always(() => {
@@ -207,7 +203,6 @@ export default class SociLoader {
         ($(window).scrollTop() + $(window).height() > $(document).height() - deltaScrollPx)
       ) {
         // fetch additional items
-        console.log(this.state);
         this.state.infiniteScrollEnabled = false;
         this.fetchSoci(false);
       }

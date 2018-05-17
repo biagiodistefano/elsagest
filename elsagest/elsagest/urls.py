@@ -29,8 +29,12 @@ urlpatterns = [
     path('home/', home_views.view, name='home'),
     path('librosoci/', librosoci_views.view, name='libro_soci'),
     path('librosoci/aggiungisocio/', librosoci_views.aggiungi_socio, name="aggiungi_socio"),
+    path('librosoci/modificasocio/', librosoci_views.modifica_socio, name="modifica_socio"),
+    path('elsausers/sendmail/', users_views.user_send_email, name="send_email"),
     path('graphql/', GraphQLView.as_view(graphiql=True)),
     path('login/', auth_views.login, {'template_name': 'elsausers/login.html'}, name='login'),
     path('logout/', auth_views.logout, {'next_page': '/'}, name='logout'),
     path('password/', users_views.change_password, name='change_password'),
+    path('impostazioni/', users_views.settings_view, name='change_password'),
+
 ]

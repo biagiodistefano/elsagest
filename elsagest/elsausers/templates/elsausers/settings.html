@@ -1,0 +1,140 @@
+{% extends "base/base.html" %}
+
+{% load render_bundle from webpack_loader %}
+
+{% block extra_css %}
+{% render_bundle 'common' 'css' %}
+{% endblock %}
+
+{% block content %}
+
+<!-- temporaneo, in attesa di un custom template -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 ">
+            <form class="form-horizontal" id="form-impostazioni">
+                <fieldset>
+
+                    <!-- Form Name -->
+                    <legend>Impostazioni Utente</legend>
+
+                    <!-- Text input-->
+                    {% autoescape off %}
+
+                    <!-- USERNAME -->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="username">Username</label>
+                        <div class="col-md-4">
+
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-user"></i>
+
+                                </div>
+                                <input id="username" name="username" type="text" placeholder="Username"
+                                       class="form-control input-md" value="{{ user.username }}" disabled>
+                            </div>
+                            <a href="/password/">Cambia password</a>
+                        </div>
+                    </div>
+
+                    <!-- EMAIL -->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="email">Email</label>
+                        <div class="col-md-4">
+
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-user"></i>
+
+                                </div>
+                                <input id="email" name="email" type="text" placeholder="Email"
+                                       class="form-control input-md" value="{{ user.email }}">
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <!-- HOST SMTP -->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="server-smtp">Server SMTP</label>
+                        <div class="col-md-4">
+
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-user"></i>
+
+                                </div>
+                                <input id="server-smtp" name="host" type="text" placeholder="smtp.iltuohost.com"
+                                       class="form-control input-md"
+                                       value="{{ user.userprofile.emailcredentials.host }}">
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <!-- PORTA SMTP -->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="porta-smtp">Porta SMTP</label>
+                        <div class="col-md-4">
+
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-briefcase"></i>
+
+                                </div>
+                                <input id="porta-smtp" name="port" type="text" placeholder="es. 587"
+                                       class="form-control input-md"
+                                       value="{{ user.userprofile.emailcredentials.port }}">
+                                <span class="input-group-addon"><input type="checkbox" checked name="tls"/> TLS</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- PASSWORD -->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="password-email">Password email</label>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-id-card" style="font-size: 20px;"></i>
+
+                                </div>
+                                <input id="password-email" name="password" type="password"
+                                       placeholder="La password dell'email"
+                                       class="form-control input-md">
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-3 form-result"></div>
+                        <div class="col-md-3">
+                            <button class="btn btn-default btn-primary float-right" type="submit">Salva</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        {% endautoescape %}
+        <div class="col-md-2 hidden-xs">
+            <img src="http://websamplenow.com/30/userprofile/images/avatar.jpg"
+                 class="img-responsive img-thumbnail ">
+        </div>
+
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+{% render_bundle 'common' 'js' %}
+{% render_bundle 'elsausers' 'js' %}
+{% endblock %}
