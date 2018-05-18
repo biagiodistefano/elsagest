@@ -19,6 +19,7 @@ from django.contrib.auth import views as auth_views
 import elsahome.views as home_views
 import elsausers.views as users_views
 import librosoci.views as librosoci_views
+import elsamail.views as email_views
 from graphene_django.views import GraphQLView
 from django.views.generic import RedirectView
 
@@ -30,7 +31,7 @@ urlpatterns = [
     path('librosoci/', librosoci_views.view, name='libro_soci'),
     path('librosoci/aggiungisocio/', librosoci_views.aggiungi_socio, name="aggiungi_socio"),
     path('librosoci/modificasocio/', librosoci_views.modifica_socio, name="modifica_socio"),
-    path('elsausers/sendmail/', users_views.user_send_email, name="send_email"),
+    path('elsamail/sendmail/', email_views.user_send_email, name="send_email"),
     path('graphql/', GraphQLView.as_view(graphiql=True)),
     path('login/', auth_views.login, {'template_name': 'elsausers/login.html'}, name='login'),
     path('logout/', auth_views.logout, {'next_page': '/'}, name='logout'),

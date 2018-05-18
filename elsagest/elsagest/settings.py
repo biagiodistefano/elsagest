@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'librosoci',
     'elsahome',
     'elsausers',
+    'elsamail',
 
     'webpack_loader',
     'graphene_django',
