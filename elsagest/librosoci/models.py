@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from simple_history.models import HistoricalRecords
 from datetime import date, timedelta
+from django.utils import timezone
 
 
 # Create your models here.
@@ -57,6 +58,14 @@ class Socio(models.Model):
     history = HistoricalRecords()
     objects = SociManager()
 
+    @property
+    def scaduto(self):
+        return self.scadenza_iscrizione < date.today()
+
+    @property
+    def promemoria_inviato(self):
+        return Reminder.objects.filter(destinatari=self) and Reminder.objects.filter(destinatari=self).last().recent
+
     class Meta:
         db_table = "soci"
         verbose_name = "Socio"
@@ -85,3 +94,23 @@ class RinnovoIscrizione(models.Model):
         db_table = "rinnovi"
         verbose_name = "Rinnovo iscrizione"
         verbose_name_plural = "Rinnovi iscrizioni"
+
+
+class ReminderManager(models.Manager):
+
+    def last(self):
+        return self.get_queryset().orderby('-inviata_il')
+
+
+class Reminder(models.Model):
+    mittente = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="reminder")
+    destinatari = models.ManyToManyField(Socio, related_name="remaindee")
+    inviata_il = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def recent(self):
+        return (timezone.now() - self.inviata_il).days < 15
+
+    @property
+    def not_recent(self):
+        return (timezone.now() - self.inviata_il).days > 15

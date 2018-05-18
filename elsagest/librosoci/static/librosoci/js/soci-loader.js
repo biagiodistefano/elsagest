@@ -54,6 +54,7 @@ export default class SociLoader {
                   dataIscrizione
                   ultimoRinnovo
                   scadenzaIscrizione
+                  promemoriaInviato
                   sezione{
                     nome
                   }

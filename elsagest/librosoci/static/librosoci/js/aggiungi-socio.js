@@ -1,5 +1,15 @@
+import datepickerSettings from 'common/js/datepicker-settings';
+
+const modalAggiungiSocio = $('#modal-aggiungi-socio');
+
+
 $('#btn-aggiungi-socio').on('click', () => {
-  $('#modal-aggiungi-socio').modal('show');
+  modalAggiungiSocio.modal('show');
+  modalAggiungiSocio.find('.datepicker-modal').datepicker(datepickerSettings);
+});
+
+modalAggiungiSocio.on('hide.bs.modal', () => {
+  modalAggiungiSocio.find('.datepicker-modal').datepicker('destroy');
 });
 
 

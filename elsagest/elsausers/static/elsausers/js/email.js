@@ -1,6 +1,8 @@
 
 $('#email-promemoria').submit(evt => {
   evt.preventDefault();
+  const $this = $(evt.currentTarget);
+  const formResult = $($this.find('.form-result'));
   console.log('Invio email');
   $.post({
     url: '/elsamail/sendmail/',
@@ -8,10 +10,20 @@ $('#email-promemoria').submit(evt => {
     dataType: 'json'
   }).done(response => {
     const { success, message } = response;
-    console.log(success, message);
+    let alertClass = 'alert-success';
+    if (!success) {
+      alertClass = 'alert-danger';
+    }
+    const messageBox = $(`<div class="alert ${alertClass} alert-dismissible fade in">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    ${message}
+    </div>`);
+    formResult.append(messageBox);
   }).fail(err => {
     console.log(err);
   }).always(() => {
-    console.log('dio cane');
+    setTimeout(() => {
+      $(formResult).empty();
+    }, 3000);
   });
 });

@@ -1,5 +1,8 @@
 import datepickerSettings from 'common/js/datepicker-settings';
 
+const modalModificaSocio = $('#modal-modifica-socio');
+
+
 const caricaInfoSocio = socioId => {
   const editForm = $('#form-modifica-socio');
   $(editForm).trigger('reset'); // per sicurezza
@@ -78,7 +81,12 @@ const caricaInfoSocio = socioId => {
 
 $(document).on('click', '.lista-soci tr', evt => {
   caricaInfoSocio($(evt.currentTarget).find('input').val());
-  $('#modal-modifica-socio').modal('show');
+  modalModificaSocio.modal('show');
+  modalModificaSocio.find('.datepicker-modal').datepicker(datepickerSettings);
+});
+
+modalModificaSocio.on('hide.bs.modal', () => {
+  modalModificaSocio.find('.datepicker-modal').datepicker('destroy');
 });
 
 

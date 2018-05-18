@@ -12,6 +12,9 @@ consiglieri_nazionali = list(range(14, 27))
 
 
 class SocioType(DjangoObjectType):
+
+    promemoria_inviato = graphene.Boolean()
+
     class Meta:
         model = Socio
         filter_fields = {

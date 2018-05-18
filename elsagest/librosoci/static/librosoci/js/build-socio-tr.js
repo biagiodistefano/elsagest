@@ -18,7 +18,14 @@ export default (socio, showSezione) => {
   }
   const scadenza = moment(socio.scadenzaIscrizione, config.MOMENT_DATE_FORMAT);
   if (scadenza.isBefore(moment())) {
-    $(tr).addClass('danger');
+    $(tr).find('.scadenza-iscrizione')
+      .addClass('danger')
+      .attr('title', 'Iscrizione scaduta');
+  }
+  if (socio.promemoriaInviato) {
+    $(tr).find('.email')
+      .addClass('bg-info')
+      .attr('title', 'Promemoria inviato');
   }
   return tr;
 };
