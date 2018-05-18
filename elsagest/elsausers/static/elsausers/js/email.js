@@ -3,7 +3,7 @@ $('#email-promemoria').submit(evt => {
   evt.preventDefault();
   console.log('Invio email');
   $.post({
-    url: '/elsausers/sendmail/',
+    url: '/elsamail/sendmail/',
     data: '',
     dataType: 'json'
   }).done(response => {

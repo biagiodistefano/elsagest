@@ -69,6 +69,7 @@ class Query(graphene.ObjectType):
             if kwargs.get("scadenza"):
                 order_by = "scadenza_iscrizione"
                 filtri &= Q(scadenza_iscrizione__lte=date.today() + timedelta(days=15))
+
             elif kwargs.get("consiglieri"):
                 order_by = "ruolo_id"
                 if elsa_italia:

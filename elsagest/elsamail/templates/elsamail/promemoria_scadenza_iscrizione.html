@@ -1,7 +1,8 @@
 {% autoescape off %}
-Hi {{ user.username }},
+Ciao {{ socio.nome }},
 
-Please click on the link below to confirm your registration:
+Ti ricordiamo che la tua iscrizione scade il {{ socio.scadenza_iscrizione }}.
 
-http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+Corri a rinnovare!
+
 {% endautoescape %}

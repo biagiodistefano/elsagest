@@ -11,7 +11,6 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import Group
 from django.core.mail import send_mail, get_connection
 from django.http import JsonResponse
-from cryptography.fernet import Fernet
 
 from .forms import SignUpForm
 from .tokens import account_activation_token
@@ -86,29 +85,6 @@ def change_password(request):
     return render(request, 'elsausers/change_password.html', {
         'form': form
     })
-
-
-def user_send_email(request):
-    user = request.user
-    emailcred = user.userprofile.emailcredentials
-    if request.method == 'POST':
-        connection = get_connection(
-            host=emailcred.host,
-            port=emailcred.port,
-            username=emailcred.username,
-            password=emailcred.password,
-            use_tls=emailcred.tls)
-
-        send_mail(
-            'Subject here',
-            'Here is the message.',
-            emailcred.username,
-            ['biagiodistefano92@gmail.com'],
-            fail_silently=False,
-            connection=connection
-        )
-        print("OK!")
-        return JsonResponse({"success": "true", "message": "Email inviata correttamente"})
 
 
 def settings_view(request):

@@ -1,8 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from simple_history.models import HistoricalRecords
+from datetime import date, timedelta
 
 
 # Create your models here.
@@ -31,6 +30,15 @@ class Consigliere(models.Model):
         verbose_name_plural = "Consiglieri"
 
 
+class SociManager(models.Manager):
+
+    def in_scadenza(self):
+        return self.get_queryset().filter(scadenza_iscrizione__lte=date.today() + timedelta(days=15))
+
+    def scaduto(self):
+        return self.get_queryset().filter(scadenza_iscrizione__lte=date.today())
+
+
 class Socio(models.Model):
     nome = models.TextField()
     cognome = models.TextField()
@@ -47,6 +55,7 @@ class Socio(models.Model):
     consigliere_dal = models.DateField(null=True)
     data_creazione = models.DateTimeField(auto_now_add=True)
     history = HistoricalRecords()
+    objects = SociManager()
 
     class Meta:
         db_table = "soci"
