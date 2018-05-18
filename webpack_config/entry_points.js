@@ -11,6 +11,8 @@ const entryPoints = {
   librosoci: [path.join(__dirname, '..', 'elsagest/librosoci/static/librosoci/js/index.js')],
   elsahome: [path.join(__dirname, '..', 'elsagest/elsahome/static/elsahome/js/index.js')],
   elsausers: [path.join(__dirname, '..', 'elsagest/elsausers/static/elsausers/js/index.js')],
+  //elsamail: [path.join(__dirname, '..', 'elsagest/elsamail/static/elsamail/js/index.js')],
+
   // giurisprudenza: [path.join(__dirname, '..', 'les/giurisprudenza/static/giurisprudenza/js/index.js')],
   // legislazione: [path.join(__dirname, '..', 'les/legislazione/static/legislazione/js/index.js')],
   // lawyertools: [path.join(__dirname, '..', 'les/lawyertools/static/lawyertools/js/index.js')]
