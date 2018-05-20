@@ -10,7 +10,6 @@ from django.utils import timezone
 
 class SezioneElsa(models.Model):
     nome = models.TextField()
-    users = models.ManyToManyField(User)
     history = HistoricalRecords()
 
     class Meta:
@@ -20,15 +19,6 @@ class SezioneElsa(models.Model):
 
     def __str__(self):
         return f"ELSA {self.nome}"
-
-
-class Consigliere(models.Model):
-    ruolo = models.TextField()
-
-    class Meta:
-        db_table = "ruoli_consiglieri"
-        verbose_name = "Consigliere"
-        verbose_name_plural = "Consiglieri"
 
 
 class SociManager(models.Manager):
@@ -52,8 +42,6 @@ class Socio(models.Model):
     scadenza_iscrizione = models.DateField()
     ultimo_rinnovo = models.DateField(auto_now_add=True)
     attivo = models.BooleanField(default=True)
-    ruolo = models.ForeignKey(Consigliere, null=True, blank=True, on_delete=models.SET_NULL)
-    consigliere_dal = models.DateField(null=True)
     data_creazione = models.DateTimeField(auto_now_add=True)
     history = HistoricalRecords()
     objects = SociManager()
@@ -66,16 +54,52 @@ class Socio(models.Model):
     def promemoria_inviato(self):
         return Reminder.objects.filter(destinatari=self) and Reminder.objects.filter(destinatari=self).last().recent
 
+    @property
+    def iscritto_il(self):
+        return self.data_iscrizione.strftime("%d-%m-%Y")
+
+    @property
+    def scade_il(self):
+        return self.scadenza_iscrizione.strftime("%d-%m-%Y")
+
+    @property
+    def rinnovato_il(self):
+        return self.ultimo_rinnovo.strftime("%d-%m-%Y")
+
+    @property
+    def nome_esteso(self):
+        return f"{self.nome} {self.cognome}"
+
     class Meta:
         db_table = "soci"
         verbose_name = "Socio"
         verbose_name_plural = "Soci"
 
 
+class Ruolo(models.Model):
+    ruolo = models.TextField()
+    soci = models.ManyToManyField(Socio, through="RuoliSoci", related_name="ruolo_socio")
+
+    class Meta:
+        db_table = "ruoli_consiglieri"
+        verbose_name = "Consigliere"
+        verbose_name_plural = "Consiglieri"
+
+
+class RuoliSoci(models.Model):
+    ruolo = models.ForeignKey(Ruolo, on_delete=models.CASCADE)
+    socio = models.ForeignKey(Socio, on_delete=models.CASCADE)
+    consigliere_dal = models.DateField(auto_now_add=True)
+
+    @property
+    def in_carica_dal(self):
+        return self.consigliere_dal.strftime("%d-%m-%Y")
+
+
 class EmailConsigliere(models.Model):
     email = models.EmailField()
-    ruolo = models.ForeignKey(Consigliere, on_delete=models.CASCADE)
-    socio = models.OneToOneField(Socio, null=True, blank=True, on_delete=models.DO_NOTHING)
+    ruolo = models.ForeignKey(Ruolo, on_delete=models.CASCADE)
+    socio = models.OneToOneField(Socio, on_delete=models.CASCADE)
     history = HistoricalRecords()
 
     class Meta:

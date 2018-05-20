@@ -9,7 +9,6 @@ $('#form-impostazioni').submit(evt => {
     dataType: 'json'
   }).done(response => {
     const { success, message } = response;
-    console.log(response);
     if (success) {
       $(formResult).append($(`<h4 class="text-center text-success bg-success">${message}</h4>`));
     } else {

@@ -9,9 +9,9 @@ from datetime import datetime
 # Create your views here.
 def user_send_email(request):
     user = request.user
-    emailcred = user.userprofile.emailcredentials
     if request.method == 'POST':
         try:
+            emailcred = user.userprofile.emailcredentials
             post = request.POST
             tipo = post.get("tipo")
             connection = get_connection(
@@ -49,3 +49,8 @@ def user_send_email(request):
             return JsonResponse({"success": True, "message": message})
         except Exception as e:
             return JsonResponse({"success": False, "message": f"Si è verificato un errore: {e}"})
+
+
+def componi_email(request):
+    user = request.user
+    return render(request, 'elsamail/componi_email.html', context={"sezione": user.userprofile.sezione, "user": user})

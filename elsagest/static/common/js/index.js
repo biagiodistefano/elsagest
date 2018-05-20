@@ -12,14 +12,18 @@ import specialElementHandlers from './helpers/special-element-handlers';
 import salvaPdf from './helpers/salva-pdf';
 import logger from './helpers/logger';
 import config from './config';
+import './summernote';
 
 // global css stuff
 import '../scss/main.scss';
+import '../css/summernote.css';
+//import '../../vendor/scss/fonts.scss';
 
 // bootstrap studio stuff
 // TODO IMPORTANT: Do we need it?
 import './bootstrap/script.min';
 import '../css/bootstrap/styles.min.css';
+
 
 export {
   copyToClipboard,

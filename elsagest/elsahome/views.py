@@ -7,7 +7,9 @@ from django.http import JsonResponse
 def view(request):
 
     context = {
-        "user": request.user
+        "user": request.user,
+        "app": "home",
+        "sezione": request.user.userprofile.sezione
     }
 
     return render(request, 'elsahome/home.html', context)

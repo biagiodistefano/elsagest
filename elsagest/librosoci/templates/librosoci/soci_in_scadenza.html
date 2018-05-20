@@ -1,0 +1,36 @@
+<div id="soci-in-scadenza">
+    <div class="page-header">
+        <form id="email-promemoria">
+            <h3>Iscrizioni in scadenza e scadute
+                {% csrf_token %}
+                <button class="btn btn-warning hidden btn-header btn-elsagest float-right email-promemoria"
+                        type="submit">Invia promemoria
+                </button>
+
+            </h3>
+            <div class="form-result"></div>
+        </form>
+    </div>
+    <div class="table-responsive table-soci">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Cognome</th>
+                <th>Nome</th>
+                <th>Tessera n.</th>
+                <th>email</th>
+                <th>socio dal</th>
+                <th>ultimo rinnovo</th>
+                <th>scadenza iscrizione</th>
+            </tr>
+            </thead>
+            {% if app == 'home' %}
+            <tbody class="lista-soci" data-scadenza="true" data-first="15">
+            {% else %}
+            <tbody class="lista-soci" data-scadenza="true">
+            {% endif %}
+
+            </tbody>
+        </table>
+    </div>
+</div>

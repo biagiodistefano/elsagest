@@ -140,20 +140,19 @@ export default class SociLoader {
       SociLoader.addLoader(target);
       const query = `
         {
-          allSoci(consiglieri: true){
-            edges{
-              node{
-                id
+          consiglieri{
+            ruolo{
+              id
+              ruolo
+            }
+            inCaricaDal
+            socio{
+              id
+              sezione {
                 nome
-                cognome
-                ruolo{
-                  ruolo
-                }
-                consigliereDal
-                emailconsigliere{
-                  email
-                }
               }
+              nome
+              cognome
             }
           }
         }
@@ -165,16 +164,15 @@ export default class SociLoader {
         contentType: 'application/json'
       })
         .done(response => {
-          const { edges } = response.data.allSoci;
-          if (edges.length > 0) {
+          const { consiglieri } = response.data;
+          if (consiglieri.length > 0) {
             // populate panel with results
             const wrapper = $(target);
-            edges.forEach(edge => {
-              const item = buildConsigliereTr(edge.node);
+            consiglieri.forEach(consigliere => {
+              const item = buildConsigliereTr(consigliere);
               wrapper.append(item);
             });
           } else {
-            // show 'no results' message
             $(target).append(
               $(
                 `

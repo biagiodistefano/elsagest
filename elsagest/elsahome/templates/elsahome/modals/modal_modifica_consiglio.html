@@ -1,0 +1,217 @@
+<div role="dialog" tabindex="-1" class="modal fade" id="modal-consiglio-direttivo">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form id="form-modifica-consiglio" action="#" method="post" class="form" role="form">
+                <input type="hidden" name="sezione" value="{{ user.userprofile.sezione.id }}">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">ELSA {{ user.userprofile.sezione.nome }} - aggiona il Consiglio
+                        Direttivo</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4">
+                            <h4 class="text-center">Ruolo</h4>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <h4 class="text-center">Socio</h4>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <h4 class="text-center">In carica dal</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label for="presidente">Presidente</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <input type="hidden" name="ruolo" value="14">
+                                <input id="presidente" name="ruolo" class="form-control consiglio-autocomplete" autocomplete="off" required >
+                                </input>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <input class="datepicker-modal text-center form-control" name="ruolo" type="text" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label for="secgen">Segretario Generale</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <input type="hidden" name="ruolo" value="15">
+                                <input id="secgen" name="ruolo" class="form-control consiglio-autocomplete" autocomplete="off" required>
+                                </input>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <input class="datepicker-modal text-center form-control" name="ruolo" type="text" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label for="tesoriere">Tesoriere</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <input type="hidden" name="ruolo" value="16">
+                                <input id="tesoriere" name="ruolo" class="form-control consiglio-autocomplete" autocomplete="off" required>
+                                </input>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <input class="datepicker-modal text-center form-control" name="ruolo" type="text" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label for="vpmkt">VP Marketing</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <input type="hidden" name="ruolo" value="17">
+                                <input id="vpmkt" name="ruolo" class="form-control consiglio-autocomplete" autocomplete="off" required>
+                                </input>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <input class="datepicker-modal text-center form-control" name="ruolo" type="text" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label for="vpaa">VP Attività Accademiche</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <input type="hidden" name="ruolo" value="18">
+                                <input id="vpaa" name="ruolo" class="form-control consiglio-autocomplete" autocomplete="off" required>
+                                </input>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <input class="datepicker-modal text-center form-control" name="ruolo" type="text" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label for="vpsc">VP Seminari e Conferenze</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <input type="hidden" name="ruolo" value="19">
+                                <input id="vpsc" name="ruolo" class="form-control consiglio-autocomplete" autocomplete="off" required>
+                                </input>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <input class="datepicker-modal text-center form-control" name="ruolo" type="text" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label for="vpstep">VP STEP</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <input type="hidden" name="ruolo" value="20">
+                                <input id="vpstep" name="ruolo" class="form-control consiglio-autocomplete" autocomplete="off" required>
+                                </input>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <input class="datepicker-modal text-center form-control" name="ruolo" type="text" required>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-default btn-nuovo-director" data-action="add" type="button">Nuovo Director</button>
+                </div>
+                <div class="form-result"></div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" type="button" data-dismiss="modal">Chiudi</button>
+                    <button class="btn btn-default btn-primary " type="submit">Salva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--
+
+
+
+
+
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th><h3>Ruolo</h3></th>
+                                <th><h3>Socio</h3></th>
+                                <th><h3 class="float-right">In carica dal</h3></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><h4>Presidente</h4></td>
+                                <td>
+                                    <input id="presidente" name="ruolo" class="form-control consiglio-autocomplete" autocomplete="off" required>
+
+                                    </input>
+                                </td>
+                                <td>
+                                    <input class="datepicker-modal text-center form-control float-right" type="text" required>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><h4>Segretario Generale</h4></td>
+                                <td>
+                                    <input id="secgen" name="ruolo" class="form-control  consiglio-autocomplete" autocomplete="off" required>
+                                    </input>
+                                </td>
+                                <td>
+                                    <input class="datepicker-modal text-center form-control float-right" type="text" required>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><h4>Tesoriere</h4></td>
+                                <td>
+                                    <input id="tesoriere" name="ruolo" class="form-control  consiglio-autocomplete" autocomplete="off" required>
+                                    </input>
+                                </td>
+                                <td>
+                                    <input class="datepicker-modal text-center form-control float-right" type="text" required>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+-->

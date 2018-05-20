@@ -1,4 +1,4 @@
-{% extends "base/base.html" %}
+{% extends "base.html" %}
 {% load render_bundle from webpack_loader %}
 
 {% block extra_css %}
@@ -13,46 +13,14 @@
     </div>
 
     {% if sezione.nome != "Italia" %}
-
-    <div id="soci-in-scadenza">
-        <div class="page-header">
-            <form id="email-promemoria">
-            <h3>Iscrizioni in scadenza e scadute
-                    {% csrf_token %}
-                <button class="btn btn-warning hidden float-right email-promemoria" type="submit">Invia promemoria</button>
-
-            </h3>
-                <div class="form-result"></div>
-            </form>
-        </div>
-        <div class="table-responsive table-soci">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Cognome</th>
-                    <th>Nome</th>
-                    <th>Tessera n.</th>
-                    <th>email</th>
-                    <th>socio dal</th>
-                    <th>ultimo rinnovo</th>
-                    <th>scadenza iscrizione</th>
-                </tr>
-                </thead>
-                <tbody class="lista-soci" data-scadenza="true">
-
-                </tbody>
-            </table>
-        </div>
-    </div>
+    {% include 'librosoci/soci_in_scadenza.html' %}
     {% endif %}
-
     <div id="tutti-i-soci">
         <div class="page-header">
             <h3>Tutti i soci
                 {% if sezione.nome != "Italia" %}
-                <button class="btn btn-primary btn-header float-right" id="btn-aggiungi-socio" type="button">Nuovo socio</button>
+                <button class="btn btn-primary btn-header btn-elsagest float-right" id="btn-aggiungi-socio" type="button">Nuovo socio</button>
                 {% endif %}
-                <button class="btn btn-info btn-header float-right" id="btn-nuova-mail-soci" type="button">Nuova email ai soci</button>
             </h3>
         </div>
         <div class="table-responsive table-soci">
@@ -94,7 +62,6 @@
 {% endblock %}
 
 {% block extra_js %}
-{% render_bundle 'librosoci' 'js' %}
 {% render_bundle 'common' 'js' %}
-{% render_bundle 'elsausers' 'js' %}
+{% render_bundle 'librosoci' 'js' %}
 {% endblock %}

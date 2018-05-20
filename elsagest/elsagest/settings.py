@@ -33,6 +33,15 @@ GRAPHENE = {
     ]
 }
 
+"ceraltigkcfarjih"
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'biagiodistefano92@gmail.com'
+EMAIL_HOST_PASSWORD = 'ceraltigkcfarjih'
+EMAIL_USE_TLS = True
+#DEFAULT_FROM_EMAIL = 'ELSAGest <noreply@elsagest.org>'
+
 DATE_FORMAT = "%d-%m-%Y"
 
 # Quick-start development settings - unsuitable for production
@@ -64,7 +73,8 @@ INSTALLED_APPS = [
 
     'webpack_loader',
     'graphene_django',
-    'simple_history'
+    'simple_history',
+    'crispy_forms'
 ]
 
 MIDDLEWARE = [
@@ -143,7 +153,12 @@ USE_TZ = True
 
 LOGIN_URL = '/login/'
 LOGIN_EXEMPT_URLS = (
-    r'logout/$',
+    'logout/',
+    'librosoci/popola/',
+    'password_reset/',
+    'password_reset/done/',
+    'reset/',
+    'reset/done/',
 )
 LOGIN_REDIRECT_URL = '/home/'
 

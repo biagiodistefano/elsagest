@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load render_bundle from webpack_loader %}
+
+{% block extra_css %}
+{% render_bundle 'common' 'css' %}
+{% render_bundle 'elsamail' 'css' %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h2 class="text-center">ELSA {{ sezione.nome }} | Nuova Email</h2>
+    </div>
+
+
+    <div id="soci-in-scadenza">
+        <div class="page-header">
+            <h3>Nuova email                 <button class="btn btn-info btn-header btn-elsagest float-right" id="btn-nuova-mail-soci" type="button">Invia</button>
+</h3>
+        </div>
+        <textarea id="new_email"></textarea>
+    </div>
+
+</div>
+
+{% if sezione.nome != "Italia" %}
+{% include 'librosoci/modals/modal_aggiungi_socio.html' %}
+{% include 'librosoci/modals/modal_modifica_socio.html' %}
+{% endif %}
+{% include 'elsamail/modals/modal_nuova_email.html' %}
+
+{% endblock %}
+
+{% block extra_js %}
+{% render_bundle 'common' 'js' %}
+{% render_bundle 'elsamail' 'js' %}
+{% endblock %}

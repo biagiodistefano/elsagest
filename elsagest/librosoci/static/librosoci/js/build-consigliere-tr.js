@@ -1,14 +1,12 @@
 export default consigliere => {
-  const {
-    id, nome, cognome, ruolo, consigliereDal, emailconsigliere
-  } = consigliere;
   const item = $(`<tr>
-            <input type="hidden" value="${id}">
-            <td class="cognome">${cognome}</td>
-            <td class="nome">${nome}</td>
-            <td class="ruolo">${ruolo.ruolo}</td>
-            <td class="email">${emailconsigliere.email}</td>
-            <td class="consigliere-dal">${consigliereDal.split('-').reverse().join('-')}</td>
+            <input type="hidden" value="${consigliere.socio.id}">
+            <td class="cognome">${consigliere.socio.cognome}</td>
+            <td class="nome">${consigliere.socio.nome}</td>
+            <td class="ruolo">${consigliere.ruolo.ruolo}</td>
+            <td class="sezione">${consigliere.socio.sezione.nome}</td>
+            <td class="email">nessuna@example.elsa</td>
+            <td class="consigliere-dal">${consigliere.inCaricaDal}</td>
         </tr>`);
   return item;
 };

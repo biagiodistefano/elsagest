@@ -1,3 +1,4 @@
+
 .float-right {
   float: right;
   margin-top: -6px;
@@ -35,6 +36,10 @@
   overflow-y: auto;
 }
 
+.email-editor {
+  height: 75vh;
+}
+
 .loader {
   text-align: center;
 }
@@ -49,6 +54,27 @@
 }
 
 
-button {
+.btn-elsagest {
   margin-right: 2%;
+}
+
+.selectize-dropdown {
+  position: absolute;
+  z-index: 10000; /* adjust as necessary */
+  border: 1px solid #d0d0d0;
+  background: #ffffff;
+  margin: -1px 0 0 0;
+  border-top: 0 none;
+}
+
+.ui-autocomplete {
+  max-height: 200px;
+  max-width: 300px;
+  overflow-y: auto;
+  /* prevent horizontal scrollbar */
+  overflow-x: hidden;
+}
+
+.loader {
+  text-align: center;
 }

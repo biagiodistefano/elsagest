@@ -128,7 +128,7 @@ $('#chiudi-modal-modifica-socio').on('click', () => {
   if (nuovoRinn.length) {
     nuovoRinn.remove();
   }
-  rinnBtn.setAttr('data-action', 'add');
+  rinnBtn.attr('data-action', 'add');
   rinnBtn.text('Nuovo rinnovo');
 });
 

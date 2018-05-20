@@ -32,7 +32,7 @@ def save_user_profile(sender, instance, **kwargs):
 class EmailCredentials(models.Model):
 
     username = models.EmailField()
-    password = EncryptedTextField() # will be encrypted... but... BIG security issue!
+    password = EncryptedTextField()  # will be encrypted... but... BIG security issue!
     host = models.TextField()
     port = models.IntegerField()
     tls = models.BooleanField()

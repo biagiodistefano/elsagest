@@ -2,7 +2,10 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from graphql_relay.node.node import from_global_id
 from .models import Socio, RinnovoIscrizione
+from .random_pop import genera_sezioni
 from datetime import date, datetime, timedelta
+from django.shortcuts import redirect
+from librosoci.models import SezioneElsa, RuoliSoci, Socio, Ruolo
 
 # Create your views here.
 
@@ -84,3 +87,68 @@ def modifica_socio(request):
             raise
             return JsonResponse({"success": False, "message": str(e)})
 
+
+ruoli_non_duplicabili = list(range(14, 20))  # tutti eccetto i Director
+
+
+def modifica_consiglio(request):
+    if request.method == "POST":
+        user = request.user
+        post = request.POST
+        sezione_id = int(post.get("sezione"))
+        sezione = SezioneElsa.objects.get(pk=sezione_id)
+
+        if user.userprofile.sezione.id != sezione_id and not user.is_superuser:
+            return JsonResponse({"success": False, "message": "Non hai i permessi per modificare questo consiglio"})
+
+        # thanks to https://stackoverflow.com/a/5711993/3782345
+        data_list = post.getlist("ruolo")
+        new_roles = zip(*[data_list[i::3] for i in range(3)])
+        if sezione.nome == "Italia":
+            RuoliSoci.objects.filter(ruolo_id__in=range(1, 14)).delete()
+        # else:
+        #     RuoliSoci.objects.filter(socio__sezione=sezione).exclude(ruolo_id__in=range(1, 14)).delete()  # non eliminiamo i consiglieri nazionali
+        ruoli_rimossi = []
+
+        ruoli_assegnati = []
+        for ruolo, id_socio, data in new_roles:
+            id_ruolo = int(ruolo)
+            if id_ruolo in ruoli_assegnati and id_ruolo in ruoli_non_duplicabili:
+                return {"success": False, "message": f"Non può esserci più di un {Ruolo.objects.get(pk=id_ruolo).ruolo}"}
+            else:
+                ruoli_assegnati.append(id_ruolo)
+            if sezione.nome == "Italia":
+                id_ruolo -= 13
+            id_socio = from_global_id(id_socio)[1]
+            socio = Socio.objects.get(pk=id_socio)
+            ruolo = Ruolo.objects.get(pk=id_ruolo)
+            consigliere_dal = datetime.strptime(data, "%d-%m-%Y").date()
+            try:
+                if sezione.nome == "Italia":
+                    print("ELSA Italia")
+                    ruoli_precedenti = RuoliSoci.objects.filter(socio=socio)  # abbiamo già eliminato tutti gli altri, non occorrono altri filtri
+                    print(ruoli_precedenti)
+                    if ruoli_precedenti:
+                        for r in ruoli_precedenti:
+                            ruoli_rimossi.append(f"{socio.nome_esteso} da {r.ruolo.ruolo} di ELSA {socio.sezione.nome}")
+                            r.delete()
+                    nuovo_ruolo = RuoliSoci.objects.create(ruolo=ruolo, socio=socio, consigliere_dal=consigliere_dal)
+                    nuovo_ruolo.save()
+                else:
+                    ruolo_precedente = RuoliSoci.objects.get(socio=socio)  # quindi se è consigliere di ELSA Italia
+                    return JsonResponse({"success": False, "message": f"{socio.nome_esteso} è già {ruolo_precedente.ruolo.ruolo}"})
+            except:
+                nuovo_ruolo = RuoliSoci.objects.create(ruolo=ruolo, socio=socio, consigliere_dal=consigliere_dal)
+                nuovo_ruolo.save()
+
+        message = f"Componenti del consiglio direttivo di ELSA {sezione.nome} aggiornati!"
+        if ruoli_rimossi:
+            message += ". I seguenti ruoli sono stati rimossi: " + "; ".join(ruoli_rimossi)
+        return JsonResponse({"success": True, "message": message})
+
+
+def popola_db(request):
+    if request.method == "POST":
+        genera_sezioni()
+        print("database generato")
+        return redirect("/")

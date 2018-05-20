@@ -1,4 +1,4 @@
-{% extends "base/base.html" %}
+{% extends "base.html" %}
 {% load render_bundle from webpack_loader %}
 
 {% block extra_css %}
@@ -10,7 +10,7 @@
 <div class="container">
     <div class="page-header">
         <h3>Consiglio direttivo
-            <button class="btn btn-primary float-right" type="button">Modifica</button>
+            <button class="btn btn-primary btn-header btn-elsagest float-right" id="aggiorna-consiglio" type="button">Aggiorna componenti</button>
         </h3>
     </div>
     <div class="table-responsive table-consiglio-direttivo">
@@ -20,6 +20,7 @@
                 <th>Cognome</th>
                 <th>Nome</th>
                 <th>Ruolo</th>
+                <th>Sezione</th>
                 <th>email</th>
                 <th>in carica dal</th>
             </tr>
@@ -29,34 +30,16 @@
             </tbody>
         </table>
     </div>
-    <div id="soci-in-scadenza">
-        <div class="page-header">
-            <h3>Iscrizioni in scadenza e scadute
-                <button class="btn btn-primary hidden float-right" type="button">Invia promemoria</button>
-            </h3>
-        </div>
-        <div class="table-responsive table-soci">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Cognome</th>
-                    <th>Nome</th>
-                    <th>Tessera n.</th>
-                    <th>email</th>
-                    <th>socio dal</th>
-                    <th>ultimo rinnovo</th>
-                    <th>scadenza iscrizione</th>
-                </tr>
-                </thead>
-                <tbody class="lista-soci" data-first="15" data-scadenza="true">
 
-                </tbody>
-            </table>
-        </div>
-    </div>
+    {% if sezione.nome != 'Italia' %}
+
+    {% include 'librosoci/soci_in_scadenza.html' %}
+
+    {% endif %}
+
     <div class="page-header">
         <h3>Ultime email inviate ai soci
-            <button class="btn btn-info btn-header float-right" id="btn-nuova-mail-soci" type="button">Nuova email ai soci</button>
+            <button class="btn btn-info btn-header btn-elsagest float-right" id="btn-nuova-mail-soci" type="button">Nuova email ai soci</button>
         </h3>
     </div>
     <div class="media">
@@ -82,6 +65,8 @@
         </div>
     </div>
 </div>
+
+{% include 'elsahome/modals/modal_modifica_consiglio.html' %}
 {% endblock %}
 
 {% block extra_js %}

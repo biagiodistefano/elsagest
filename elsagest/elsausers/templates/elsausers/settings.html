@@ -1,4 +1,4 @@
-{% extends "base/base.html" %}
+{% extends "base.html" %}
 
 {% load render_bundle from webpack_loader %}
 
@@ -46,7 +46,7 @@
 
                             <div class="input-group">
                                 <div class="input-group-addon">
-                                    <i class="fa fa-user"></i>
+                                    <i class="fa fa-envelope"></i>
 
                                 </div>
                                 {% if user.userprofile.emailcredentials.username %}
@@ -69,7 +69,7 @@
 
                             <div class="input-group">
                                 <div class="input-group-addon">
-                                    <i class="fa fa-user"></i>
+                                    <i class="fa fa-server"></i>
 
                                 </div>
                                 <input id="server-smtp" name="host" type="text" placeholder="smtp.iltuohost.com"
@@ -88,7 +88,7 @@
 
                             <div class="input-group">
                                 <div class="input-group-addon">
-                                    <i class="fa fa-briefcase"></i>
+                                    <i class="fa fa-cog"></i>
 
                                 </div>
                                 <input id="porta-smtp" name="port" type="text" placeholder="es. 587"
@@ -106,7 +106,7 @@
                         <div class="col-md-4">
                             <div class="input-group">
                                 <div class="input-group-addon">
-                                    <i class="fa fa-id-card" style="font-size: 20px;"></i>
+                                    <i class="fa fa-lock"></i>
 
                                 </div>
                                 <input id="password-email" name="password" type="password"
@@ -127,7 +127,6 @@
                 </fieldset>
             </form>
         </div>
-        {% endautoescape %}
         <div class="col-md-2 hidden-xs">
             <img src="http://websamplenow.com/30/userprofile/images/avatar.jpg"
                  class="img-responsive img-thumbnail ">
