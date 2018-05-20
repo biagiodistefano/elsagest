@@ -5,7 +5,7 @@ const utils = require('./utils');
 module.exports = {
   port: 3000,
   host: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'http://elsagest.ddns.net',
-  publicPath: 'les/static/build/',
+  publicPath: 'elsagest/static/build/',
   srcPath: path.join(__dirname, '..', 'elsagest'),
   outputPath: path.join(__dirname, '..', 'elsagest', 'static', 'build'),
   vendor: [
@@ -28,9 +28,9 @@ module.exports = {
     'bootstrap-datepicker/dist/locales/bootstrap-datepicker.it.min.js',
     'bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css',
     'bootstrap-slider/dist/bootstrap-slider.min.js',
-    'bootstrap-slider/dist/css/bootstrap-slider.min.css'
+    'bootstrap-slider/dist/css/bootstrap-slider.min.css',
     // // custom stuff
-    // 'les/static/vendor/js/bootstrap3-typeahead.min.js',
-    // 'les/static/vendor/scss/fonts.scss'
+    //'elsagest/static/vendor/js/bootstrap3-typeahead.min.js',
+    'elsagest/static/vendor/scss/fonts.scss'
   ]
 };

@@ -23,8 +23,9 @@ module.exports = {
       librosoci: `${config.srcPath}/librosoci/static/librosoci/`,
       elsahome: `${config.srcPath}/elsahome/static/elsahome/`,
       elsausers: `${config.srcPath}/elsausers/static/elsausers/`,
-      //elsamail: `${config.srcPath}/elsamail/static/elsamail/`,
-      common: `${config.srcPath}/static/common/`
+      elsamail: `${config.srcPath}/elsamail/static/elsamail/`,
+      common: `${config.srcPath}/static/common/`,
+      'CodeMirror': 'codemirror'
       // commonUtils: `${config.srcPath}/static/common/js/index`,
       // home: `${config.srcPath}/home/static/home/`,
       // giurisprudenza: `${config.srcPath}/giurisprudenza/static/giurisprudenza/`,
@@ -101,6 +102,9 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       'process.env.BROWSER': true
+    }),
+    new webpack.DefinePlugin({
+      'require.specified': 'require.resolve'
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor'
