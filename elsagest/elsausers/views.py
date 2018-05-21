@@ -11,10 +11,14 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import Group
 from django.core.mail import send_mail, get_connection
 from django.http import JsonResponse
+from django.contrib.auth.forms import PasswordResetForm
+from django.http import HttpRequest
+from django.conf import settings
 
 from .forms import SignUpForm
 from .tokens import account_activation_token
 from .models import EmailCredentials
+from librosoci.models import Ruolo
 
 
 def home(request):
@@ -87,7 +91,7 @@ def change_password(request):
     })
 
 
-def settings_view(request):
+def impostazioni_utente(request):
     user = request.user
     if request.method == 'POST':
         try:
@@ -113,7 +117,6 @@ def settings_view(request):
                     return JsonResponse({"success": True, "message": "Impostazioni aggiornate!"})
                 except Exception as e:
                     return JsonResponse({"success": False, "message": f"Impossibile accedere: {e}"})
-
             except:
                 if password:
                     credentials = EmailCredentials.objects.create(
@@ -130,8 +133,55 @@ def settings_view(request):
                     return JsonResponse({"success": False, "message": "Specificare una password"})
 
         except Exception as e:
-            #return JsonResponse({"success": False, "message": str(e)})
-            raise
+            return JsonResponse({"success": False, "message": str(e)})
 
-    else:
-        return render(request, 'elsausers/settings.html')
+
+def nuovo_utente(request):
+    user = request.user
+    sezione = user.userprofile.sezione
+    if request.method == "POST":
+        try:
+            post = request.POST
+
+            username, email1, email2 = post.get('username'), post.get('email1'), post.get('email2')
+
+            if User.objects.filter(username=username):
+                JsonResponse({"success": False, "message": f"L'utente esiste già"})
+
+            if email1 != email2:
+                return JsonResponse({"success": False, "message": "Le email inserite non coincidono"})
+
+            password = User.objects.make_random_password()
+            new_user = User.objects.create(username=username, email=email1, is_active=True, password=password)
+            new_user.save()
+            new_user.userprofile.sezione = sezione
+            new_user.save()
+            current_site = get_current_site(request)
+            protocol = request.scheme
+            send_mail(
+                subject="Attiva il tuo account su ELSAGest",
+                message=render_to_string('elsausers/welcome_email.html', {
+                    'user': user,
+                    'domain': current_site.domain,
+                    'protocol': protocol
+                }),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[new_user.email],
+                fail_silently=False
+            )
+            return JsonResponse({"success": True, "message": "È stata inviata una email all'indirizzo indicato"})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": f"Si è verificato un errore {e}"})
+
+
+def settings_view(request):
+    sezione = request.user.userprofile.sezione
+    abbreviazioni_ruoli = set([r.abbreviazione for r in Ruolo.objects.all().order_by('id')
+                               if not User.objects.filter(username=f"{r.abbreviazione}.{sezione.domain}")])
+    print(abbreviazioni_ruoli)
+    context = {
+        "user": request.user,
+        "sezione": sezione,
+        "ruoli": abbreviazioni_ruoli
+    }
+    return render(request, 'elsausers/settings.html', context=context)

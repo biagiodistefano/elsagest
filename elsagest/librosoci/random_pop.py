@@ -29,18 +29,20 @@ sezioni_elsa = "Nessuna - Italia - Bari - Benevento - Bologna - Brescia - Caglia
 sezioni_elsa = [s.strip() for s in sezioni_elsa.split('-')]
 
 
-ruoli = ["Presidente", "Segretario Generale", "Tesoriere", "VP Marketing",
-         "VP Attività Accademiche", "VP Seminari e Conferenze", "VP STEP",
-         "Director IM", "Director Tesoreria", "Director Marketing", "Director Attività Accademiche",
-         "Director Seminari e Conferenze", "Director STEP"]
+ruoli = [("Presidente", "presidente"), ("Segretario Generale", "secgen"), ("Tesoriere", "tesoriere"),
+         ("VP Marketing", "vpmkt"), ("VP Attività Accademiche", "vpaa"), ("VP Seminari e Conferenze", "vpsc"),
+         ("VP STEP", "vpstep"),
+         ("Director IM", "dirim"), ("Director Tesoreria", "dirtes"), ("Director Marketing", "dirmkt"),
+         ("Director Attività Accademiche", "diraa"), ("Director Seminari e Conferenze", "dirsc"),
+         ("Director STEP", "dirstep")]
 
-ruoli = [r + " Nazionale" for r in ruoli if r != "Socio"] + ruoli
+ruoli = [(r + " Nazionale", s) for r, s in ruoli] + ruoli
 
 
 def genera_ruoli():
     if not Ruolo.objects.all():
-        for ruolo in ruoli:
-            consigliere = Ruolo.objects.create(ruolo=ruolo)
+        for ruolo, abbreviazione in ruoli:
+            consigliere = Ruolo.objects.create(ruolo=ruolo, abbreviazione=abbreviazione)
             consigliere.save()
 
 

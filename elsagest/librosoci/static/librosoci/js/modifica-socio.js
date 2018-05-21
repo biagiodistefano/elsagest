@@ -1,4 +1,5 @@
 import datepickerSettings from 'common/js/datepicker-settings';
+import SociLoader from './soci-loader';
 
 const modalModificaSocio = $('#modal-modifica-socio');
 
@@ -92,6 +93,8 @@ modalModificaSocio.on('hide.bs.modal', () => {
 
 $('#form-modifica-socio').submit(event => {
   event.preventDefault();
+  const $this = $(event.currentTarget);
+  const formResult = $this.find('.form-result');
   const datastring = $(event.currentTarget).serialize();
   $.post({
     url: '/librosoci/modificasocio/',
@@ -100,23 +103,21 @@ $('#form-modifica-socio').submit(event => {
   }
   ).done(response => {
     const { success, message } = response;
-    const formResult = $('#form-modifica-socio-result');
     $(formResult).empty();
+    console.log(formResult);
     if (success) {
       $(formResult).append($(`<h4 class="text-center text-success bg-success">${message}</h4>`));
-      $('#form-aggiungi-socio').trigger('reset');
-      //SociLoader.fetchSoci();
     } else {
       $(formResult).append($(`<h4 class="text-center text-danger bg-danger">${message}</h4>`));
     }
   }).fail(() => {
-    const formResult = $('#form-modifica-socio-result');
     $(formResult).empty();
     $(formResult).append($('<h4 class="text-center text-danger bg-danger">Si è verificato un errore</h4>'));
   }).always(() => {
-    const formResult = $('#form-modifica-socio-result');
     setTimeout(() => {
       $(formResult).empty();
+      SociLoader.init();
+      SociLoader.fetchSoci(true);
     }, 3000);
   });
 });

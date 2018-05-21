@@ -1,17 +1,18 @@
+import initForm from 'elsahome/js/init-form';
 import buildSocioTr from './build-socio-tr';
 import buildConsigliereTr from './build-consigliere-tr';
 
 const deltaScrollPx = 30;
 
-export default class SociLoader {
+class SociLoader {
   constructor() {
     this.init();
   }
 
   init() {
     this.cleanup();
-    this.fetchSoci();
-    this.fetchConsiglieri();
+    //this.fetchSoci();
+    //this.fetchConsiglieri();
   }
 
   fetchSoci(empty) {
@@ -172,6 +173,11 @@ export default class SociLoader {
               const item = buildConsigliereTr(consigliere);
               wrapper.append(item);
             });
+            const formConsiglio = $('#form-modifica-consiglio');
+            if (formConsiglio.length) {
+              formConsiglio.find('.row-director').remove();
+            }
+            initForm(consiglieri);
           } else {
             $(target).append(
               $(
@@ -240,3 +246,5 @@ export default class SociLoader {
     };
   }
 }
+
+export default new SociLoader();

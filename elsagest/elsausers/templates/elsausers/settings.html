@@ -13,7 +13,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-10 ">
-            <form class="form-horizontal" id="form-impostazioni">
+            <form class="form-horizontal" id="form-impostazioni-utente" action="{% url 'impostazioni_utente' %}">
                 <fieldset>
 
                     <!-- Form Name -->
@@ -51,7 +51,8 @@
                                 </div>
                                 {% if user.userprofile.emailcredentials.username %}
                                 <input id="email" name="email" type="text" placeholder="Email"
-                                       class="form-control input-md" value="{{ user.userprofile.emailcredentials.username }}" required>
+                                       class="form-control input-md"
+                                       value="{{ user.userprofile.emailcredentials.username }}" required>
                                 {% else %}
                                 <input id="email" name="email" type="text" placeholder="Email"
                                        class="form-control input-md" value="{{ user.email }}" required>
@@ -124,8 +125,88 @@
                             <button class="btn btn-default btn-primary float-right" type="submit">Salva</button>
                         </div>
                     </div>
+                    {% endautoescape %}
                 </fieldset>
             </form>
+
+            <!-- FORM IMPOSTAZIONI SEZIONE -->
+
+            <fieldset>
+
+                <!-- Form Name -->
+                <legend>Impostazioni ELSA {{sezione.nome}}</legend>
+                <form class="form-horizontal" id="form-aggiungi-utente" action="{% url 'impostazioni_aggiungi_utente' %}">
+
+                    <!-- Text input-->
+                    {% autoescape off %}
+
+                    <h4 class="text-center">Aggiungi un nuovo amministratore</h4>
+
+                    <!-- USERNAME -->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="username">Username</label>
+                        <div class="col-md-4">
+
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-user"></i>
+
+                                </div>
+                                <select name="username" class="form-control">
+                                    {% for ruolo in ruoli %}
+                                    <option value="{{ruolo}}">{{ruolo}}.{{sezione.domain}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EMAIL -->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="email">Email</label>
+                        <div class="col-md-4">
+
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-envelope"></i>
+
+                                </div>
+                                <input id="new_email1" name="email1" type="text" placeholder="Email"
+                                       class="form-control" required>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <!-- CONFERMA EMAIL -->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="email">Conferma email</label>
+                        <div class="col-md-4">
+
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-envelope"></i>
+
+                                </div>
+                                <input id="new_email2" name="email2" type="text" placeholder="Conferma Email"
+                                       class="form-control" required>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {% endautoescape %}
+                    <div class="form-group">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-3 form-result"></div>
+                        <div class="col-md-3">
+                            <button class="btn btn-default btn-primary float-right" type="submit">Salva</button>
+                        </div>
+                    </div>
+                </form>
+            </fieldset>
+
         </div>
         <div class="col-md-2 hidden-xs">
             <img src="http://websamplenow.com/30/userprofile/images/avatar.jpg"

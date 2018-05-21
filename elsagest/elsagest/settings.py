@@ -40,7 +40,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'biagiodistefano92@gmail.com'
 EMAIL_HOST_PASSWORD = 'ceraltigkcfarjih'
 EMAIL_USE_TLS = True
-#DEFAULT_FROM_EMAIL = 'ELSAGest <noreply@elsagest.org>'
+DEFAULT_FROM_EMAIL = 'biagiodistefano92@gmail.com'
 
 DATE_FORMAT = "%d-%m-%Y"
 

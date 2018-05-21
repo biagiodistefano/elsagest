@@ -27,6 +27,8 @@ def aggiungi_socio(request):
             print(post)
             data_iscrizione = datetime.strptime(post.get("data_iscrizione"), "%d-%m-%Y").date()
             scadenza_iscrizione = data_iscrizione + timedelta(days=364)
+            sezione = request.user.userprofile.sezione
+            print(sezione)
             socio = Socio.objects.create(
                 nome=post.get("nome"),
                 cognome=post.get("cognome"),
@@ -35,13 +37,14 @@ def aggiungi_socio(request):
                 numero_tessera=post.get("numero_tessera"),
                 data_iscrizione=data_iscrizione,
                 scadenza_iscrizione=scadenza_iscrizione,
-                ruolo_id=14,
-                sezione=request.user.userprofile.sezione
+                quota_iscrizione=post.get("quota_iscrizione"),
+                sezione=sezione
             )
             socio.save()
             print("Everything ok!")
             return JsonResponse({"success": True})
         except Exception as e:
+            raise
             print("Something went wrong!")
             #return JsonResponse({"success": False, "message": str(e)})
             raise
@@ -106,13 +109,16 @@ def modifica_consiglio(request):
         new_roles = zip(*[data_list[i::3] for i in range(3)])
         if sezione.nome == "Italia":
             RuoliSoci.objects.filter(ruolo_id__in=range(1, 14)).delete()
-        # else:
-        #     RuoliSoci.objects.filter(socio__sezione=sezione).exclude(ruolo_id__in=range(1, 14)).delete()  # non eliminiamo i consiglieri nazionali
+        else:
+            RuoliSoci.objects.filter(socio__sezione=sezione).exclude(ruolo_id__in=range(1, 14)).delete()  # non eliminiamo i consiglieri nazionali
         ruoli_rimossi = []
 
         ruoli_assegnati = []
         for ruolo, id_socio, data in new_roles:
-            id_ruolo = int(ruolo)
+            try:
+                id_ruolo = int(ruolo)
+            except ValueError:
+                id_ruolo = from_global_id(ruolo)[1]
             if id_ruolo in ruoli_assegnati and id_ruolo in ruoli_non_duplicabili:
                 return {"success": False, "message": f"Non può esserci più di un {Ruolo.objects.get(pk=id_ruolo).ruolo}"}
             else:
@@ -121,6 +127,7 @@ def modifica_consiglio(request):
                 id_ruolo -= 13
             id_socio = from_global_id(id_socio)[1]
             socio = Socio.objects.get(pk=id_socio)
+            print(id_ruolo, socio.nome_esteso)
             ruolo = Ruolo.objects.get(pk=id_ruolo)
             consigliere_dal = datetime.strptime(data, "%d-%m-%Y").date()
             try:

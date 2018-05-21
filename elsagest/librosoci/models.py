@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from simple_history.models import HistoricalRecords
 from datetime import date, timedelta
 from django.utils import timezone
+import re
 
 
 # Create your models here.
@@ -11,6 +12,14 @@ from django.utils import timezone
 class SezioneElsa(models.Model):
     nome = models.TextField()
     history = HistoricalRecords()
+
+    @property
+    def domain(self):
+        domain = re.sub(r"[,']", r"", "".join(f"elsa{self.nome}".lower().split()))
+        par = re.search('\((.+)\)', domain)
+        if par:
+            domain = par.group(1)
+        return domain.lower()
 
     class Meta:
         db_table = "sezioni_elsa"
@@ -78,6 +87,7 @@ class Socio(models.Model):
 
 class Ruolo(models.Model):
     ruolo = models.TextField()
+    abbreviazione = models.TextField()
     soci = models.ManyToManyField(Socio, through="RuoliSoci", related_name="ruolo_socio")
 
     class Meta:

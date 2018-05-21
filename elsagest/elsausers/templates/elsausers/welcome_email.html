@@ -1,0 +1,6 @@
+{% autoescape off %}
+Per attivare il tuo account clicca qui sotto e resetta la tua email:
+
+{{ protocol }}://{{ domain }}{% url 'password_reset' %}
+
+{% endautoescape %}

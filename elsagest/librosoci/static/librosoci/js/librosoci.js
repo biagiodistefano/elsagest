@@ -7,5 +7,5 @@ import SociLoader from './soci-loader';
 
 //$('.datepicker-modal').datepicker(datepickerSettings);
 
-// eslint-disable-next-line no-new
-new SociLoader();
+SociLoader.fetchSoci();
+SociLoader.fetchConsiglieri();

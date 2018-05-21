@@ -7,19 +7,24 @@ from datetime import datetime
 
 
 # Create your views here.
-def user_send_email(request):
+def promemoria_scadenza(request):
     user = request.user
     if request.method == 'POST':
         try:
-            emailcred = user.userprofile.emailcredentials
-            post = request.POST
-            tipo = post.get("tipo")
-            connection = get_connection(
-                host=emailcred.host,
-                port=emailcred.port,
-                username=emailcred.username,
-                password=emailcred.password,
-                use_tls=emailcred.tls)
+            dry = request.POST.get('dry')
+            print(request.POST)
+            if not dry:
+                emailcred = user.userprofile.emailcredentials
+                post = request.POST
+                connection = get_connection(
+                    host=emailcred.host,
+                    port=emailcred.port,
+                    username=emailcred.username,
+                    password=emailcred.password,
+                    use_tls=emailcred.tls)
+                mittente = emailcred.username
+            else:
+                mittente = "noreply@elsagest.org"
 
             messaggi = []
             reminder = Reminder.objects.create(mittente=user)
@@ -35,14 +40,15 @@ def user_send_email(request):
                         "stato_iscrizione": stato_iscrizione,
                         "scadenza_iscrizione": datetime.strftime(socio.scadenza_iscrizione, f"%d/%m/%Y")
                     }
-                    corpo = render_to_string('elsamail/promemoria_scadenza_iscrizione.html', context=context)
-                    mittente = emailcred.username
+                    corpo = render_to_string('elsamail/modelli/promemoria_scadenza_iscrizione.html', context=context)
+
                     destinatari = [socio.email]
                     messaggi.append((oggetto, corpo, mittente, destinatari))
             reminder.save()
             if len(messaggi):
                 messaggi = tuple(messaggi)
-                send_mass_mail(messaggi, fail_silently=False, connection=connection)
+                if not dry:
+                    send_mass_mail(messaggi, fail_silently=False, connection=connection)
                 message = f"{len(messaggi)} promemoria inviat{'o' if len(messaggi) > 1 else 'o'} correttamente!"
             else:
                 message = f"Tutti i promemoria ai soci in scadenza sono già stati inviati da meno di 15 giorni!"

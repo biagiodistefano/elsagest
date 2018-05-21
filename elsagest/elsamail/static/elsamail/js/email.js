@@ -1,11 +1,12 @@
+import SociLoader from 'librosoci/js/soci-loader';
 
 $('#email-promemoria').submit(evt => {
   evt.preventDefault();
   const $this = $(evt.currentTarget);
   const formResult = $($this.find('.form-result'));
   $.post({
-    url: '/elsamail/sendmail/',
-    data: '',
+    url: '/elsamail/promemoria-scadenza/',
+    data: { dry: true },
     dataType: 'json'
   }).done(response => {
     const { success, message } = response;
@@ -23,7 +24,9 @@ $('#email-promemoria').submit(evt => {
   }).always(() => {
     setTimeout(() => {
       $(formResult).empty();
-    }, 3000);
+      SociLoader.init();
+      SociLoader.fetchSoci(true);
+    }, 5000);
   });
 });
 

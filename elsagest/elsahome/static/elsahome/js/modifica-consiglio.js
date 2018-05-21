@@ -1,4 +1,6 @@
 import datepickerSettings from 'common/js/datepicker-settings';
+import SociLoader from 'librosoci/js/soci-loader';
+import selectDirector from './select-director';
 
 const modalConsiglioDirettivo = $('#modal-consiglio-direttivo');
 
@@ -98,42 +100,16 @@ formConsiglio.submit(evt => {
   }).always(() => {
     setTimeout(() => {
       $(formResult).empty();
-    }, 30000);
+      SociLoader.init();
+      SociLoader.fetchConsiglieri();
+    }, 3000);
   });
 });
 
 $('.btn-nuovo-director').on('click', evt => {
   const $this = $(evt.currentTarget);
   //const thisParent = $($this.parent());
-  const nuovoDirector = $(`<div class="row">
-                      <div class="col-md-4 col-sm-4">
-                          <div class="form-group">
-                              <select name="ruolo" class="form-control">
-                              <option value="21">Director IM</option>
-                              <option value="22">Director Tesoreria</option>
-                              <option value="23">Director Marketing</option>
-                              <option value="24">Director Attività Accademice</option>
-                              <option value="25">Director Seminari e Conferenze</option>
-                              <option value="26">Director STEP</option>
-                              <option value="0">Rimuovi Director</option>
-                              </select>
-                          </div>
-                      </div>
-                      <div class="col-md-4 col-sm-4">
-                          <div class="form-group">
-                              <input name="vpstep" class="form-control consiglio-autocomplete" autocomplete="off" required>
-                              </input>
-                          </div>
-                      </div>
-                      <div class="col-md-4 col-sm-4">
-                          <div class="form-group">
-                              <input class="datepicker-modal text-center form-control" type="text" required>
-                          </div>
-                      </div>
-                  </div>
-                    
-                  </div>
-                  </div>`);
+  const nuovoDirector = selectDirector();
   nuovoDirector.find('.datepicker-modal').datepicker(datepickerSettings);
   nuovoDirector.on('change', 'select', selevt => {
     const select = $(selevt.currentTarget);

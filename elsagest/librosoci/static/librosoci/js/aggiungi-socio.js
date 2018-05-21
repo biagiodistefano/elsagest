@@ -1,4 +1,5 @@
 import datepickerSettings from 'common/js/datepicker-settings';
+import SociLoader from './soci-loader';
 
 const modalAggiungiSocio = $('#modal-aggiungi-socio');
 
@@ -15,6 +16,8 @@ modalAggiungiSocio.on('hide.bs.modal', () => {
 
 $('#form-aggiungi-socio').submit(event => {
   event.preventDefault();
+  const $this = $(event.currentTarget);
+  const formResult = $this.find('.form-result');
   const datastring = $(event.currentTarget).serialize();
   $.post({
     url: '/librosoci/aggiungisocio/',
@@ -23,23 +26,21 @@ $('#form-aggiungi-socio').submit(event => {
   }
   ).done(response => {
     const { success } = response;
-    const formResult = $('#form-aggiungi-socio-result');
     $(formResult).empty();
     if (success) {
       $(formResult).append($('<h4 class="text-center text-success bg-success">Nuovo socio aggiunto!</h4>'));
-      $('#form-aggiungi-socio').trigger('reset');
-      //SociLoader.fetchSoci();
     } else {
       $(formResult).append($('<h4 class="text-center text-danger bg-danger">Si è verificato un errore</h4>'));
     }
   }).fail(() => {
-    const formResult = $('#form-aggiungi-socio-result');
     $(formResult).empty();
     $(formResult).append($('<h4 class="text-center text-danger bg-danger">Si è verificato un errore</h4>'));
   }).always(() => {
-    const formResult = $('#form-aggiungi-socio-result');
     setTimeout(() => {
       $(formResult).empty();
+      SociLoader.init();
+      SociLoader.fetchSoci(true);
+      $this.trigger('reset');
     }, 3000);
   });
 });
