@@ -15,6 +15,8 @@ const caricaInfoSocio = socioId => {
         cognome
         numeroTessera
         email
+        cellulare
+        universita
         dataIscrizione
         ultimoRinnovo
         scadenzaIscrizione

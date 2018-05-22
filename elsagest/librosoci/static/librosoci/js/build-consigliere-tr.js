@@ -4,7 +4,7 @@ export default consigliere => {
             <td class="cognome">${consigliere.socio.cognome}</td>
             <td class="nome">${consigliere.socio.nome}</td>
             <td class="ruolo">${consigliere.ruolo.ruolo}</td>
-            <td class="sezione">${consigliere.socio.sezione.nome}</td>
+            <td class="sezione">${consigliere.socio.sezione.denominazione}</td>
             <td class="email">nessuna@example.elsa</td>
             <td class="consigliere-dal">${consigliere.inCaricaDal}</td>
         </tr>`);

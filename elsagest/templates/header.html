@@ -10,16 +10,14 @@
         <div
                 class="collapse navbar-collapse" id="navcol-1">
             <ul class="nav navbar-nav">
-                <li role="presentation"><a href="/home/">ELSA {{ user.userprofile.sezione.nome }}</a></li>
+                <li role="presentation"><a href="{% url 'home' %}">ELSA {{ user.userprofile.sezione.denominazione }}</a></li>
                 {% if user.is_staff %}
                 <li role="presentation"><a href="/graphql/">Graph<i>i</i>QL</a></li>
                 <li role="presentation"><a href="/admin/">Admin</a></li>
                 {% endif %}
-                <li role="presentation"><a href="/librosoci/">Libro soci</a></li>
-                <li role="presentation"><a href="/newemail">Nuova email</a></li>
-                <li role="presentation"><a href="#">Archivio email</a></li>
-                <li role="presentation"><a href="#">Verbali assemblee</a></li>
-                <li role="presentation"><a href="/impostazioni">Impostazioni</a></li>
+                <li role="presentation"><a href="{% url 'libro_soci' %}">Libro soci</a></li>
+                <li role="presentation"><a href="{% url 'componi_email' %}">Nuova email</a></li>
+                <li role="presentation"><a href="{% url 'impostazioni' %}">Impostazioni</a></li>
             </ul>
             <a class="btn btn-danger navbar-btn navbar-right" href="/logout" role="button"><strong>ESCI</strong></a>
         </div>

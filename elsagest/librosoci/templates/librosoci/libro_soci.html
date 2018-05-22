@@ -2,14 +2,13 @@
 {% load render_bundle from webpack_loader %}
 
 {% block extra_css %}
-{% render_bundle 'common' 'css' %}
 {% render_bundle 'librosoci' 'css' %}
 {% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="page-header">
-        <h2 class="text-center">Libro soci di ELSA {{ sezione.nome }}</h2>
+        <h2 class="text-center">Libro soci di ELSA {{ sezione.denominazione }}</h2>
     </div>
 
     {% if sezione.nome != "Italia" %}
@@ -36,6 +35,8 @@
                     <th>Nome</th>
                     <th>Tessera n.</th>
                     <th>email</th>
+                    <th>cellulare</th>
+                    <th>Università</th>
                     <th>socio dal</th>
                     {% if sezione.nome != "Italia" %}
                     <th>ultimo rinnovo</th>

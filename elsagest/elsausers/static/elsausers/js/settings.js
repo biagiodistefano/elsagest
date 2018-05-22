@@ -20,7 +20,7 @@ $('form').submit(evt => {
       $(formResult).append($(`<h4 class="text-center text-danger bg-danger">${message}</h4>`));
     }
   }).fail(err => {
-    console.log(err);
+    $(formResult).append($(`<h4 class="text-center text-danger bg-danger">Si è verificato un errore: ${err}</h4>`));
   }).always(() => {
     setTimeout(() => {
       $(formResult).empty();

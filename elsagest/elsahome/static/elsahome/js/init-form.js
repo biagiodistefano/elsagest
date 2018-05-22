@@ -5,7 +5,6 @@ const formConsiglio = $('#form-modifica-consiglio');
 export default consiglieri => {
   consiglieri.forEach(consigliere => {
     const { ruolo, inCaricaDal, socio } = consigliere;
-    console.log(ruolo);
     let row, dir, input, data;
     if (ruolo.ruolo.indexOf('Presidente') > -1) {
       row = formConsiglio.find('#row-presidente');

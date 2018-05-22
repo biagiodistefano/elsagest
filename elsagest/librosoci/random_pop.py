@@ -3,8 +3,10 @@ import random
 import sqlite3
 import re
 from .models import Socio, Ruolo, SezioneElsa, RuoliSoci
+from elsamail.models import UnsubscribeToken
 from django.contrib.auth.models import User
 from tqdm import tqdm
+import uuid
 
 
 def random_date(d1, d2):
@@ -90,7 +92,7 @@ def genera_consigli_direttivi():
 
 def genera_utenti():
     for sezione in SezioneElsa.objects.all():
-        username = re.sub(r"[,']", r"", "".join(f"presidente.elsa{sezione.nome}".lower().split()))
+        username = re.sub(r"[,']", r"", "".join(f"presidente.elsa{sezione.denominazione}".lower().split()))
         user = User.objects.create_user(username=username, password="elsa2018")
         user.set_password("elsa2018")
         user.save()
@@ -106,6 +108,12 @@ def genera_utenti():
     superuser.save()
 
 
+def genera_unsubscribe_token():
+    for socio in tqdm(list(Socio.objects.all()), desc="Genero token"):
+        token = uuid.uuid4()
+        ut = UnsubscribeToken.objects.create(socio=socio, token=token)
+
+
 def genera_sezioni():
     if not SezioneElsa.objects.all():
         genera_ruoli()
@@ -116,6 +124,7 @@ def genera_sezioni():
                 continue
             Socio.objects.bulk_create([Socio(**genera_socio_random(x, sezione)) for x in tqdm(list(range(random.randint(50, 200))), desc="Genreo soci")])
 
+        genera_unsubscribe_token()
         genera_consigli_direttivi()
         genera_utenti()
     else:

@@ -52,12 +52,14 @@ class SociLoader {
                   cognome
                   numeroTessera
                   email
+                  cellulare
+                  universita
                   dataIscrizione
                   ultimoRinnovo
                   scadenzaIscrizione
                   promemoriaInviato
                   sezione{
-                    nome
+                    denominazione
                   }
                 }
               }
@@ -150,7 +152,7 @@ class SociLoader {
             socio{
               id
               sezione {
-                nome
+                denominazione
               }
               nome
               cognome

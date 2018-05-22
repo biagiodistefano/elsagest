@@ -18,6 +18,14 @@ $('#form-aggiungi-socio').submit(event => {
   event.preventDefault();
   const $this = $(event.currentTarget);
   const formResult = $this.find('.form-result');
+  formResult.append($(
+    `
+    <div class="loader">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+    </div>
+    `
+  ));
+  $this.find('button[type="submit"]').attr('disabled', true);
   const datastring = $(event.currentTarget).serialize();
   $.post({
     url: '/librosoci/aggiungisocio/',
@@ -36,8 +44,10 @@ $('#form-aggiungi-socio').submit(event => {
     $(formResult).empty();
     $(formResult).append($('<h4 class="text-center text-danger bg-danger">Si è verificato un errore</h4>'));
   }).always(() => {
+    formResult.find('.loader').remove();
     setTimeout(() => {
       $(formResult).empty();
+      $this.find('button[type="submit"]').attr('disabled', false);
       SociLoader.init();
       SociLoader.fetchSoci(true);
       $this.trigger('reset');

@@ -38,6 +38,8 @@ def aggiungi_socio(request):
                 data_iscrizione=data_iscrizione,
                 scadenza_iscrizione=scadenza_iscrizione,
                 quota_iscrizione=post.get("quota_iscrizione"),
+                cellulare=post.get("cellulare"),
+                universita=post.get("univerisita"),
                 sezione=sezione
             )
             socio.save()
@@ -69,6 +71,8 @@ def modifica_socio(request):
             socio.numero_tessera = post.get("numero_tessera")
             socio.data_iscrizione = data_iscrizione
             socio.scadenza_iscrizione = scadenza_iscrizione
+            socio.cellulare = post.get("cellulare")
+            socio.universita = post.get("universita")
             data_nuovo_rinnovo = post.get("data_nuovo_rinnovo")
             quota_nuovo_rinnovo = post.get("quota_nuovo_rinnovo")
 
@@ -106,7 +110,7 @@ def modifica_consiglio(request):
 
         # thanks to https://stackoverflow.com/a/5711993/3782345
         data_list = post.getlist("ruolo")
-        new_roles = zip(*[data_list[i::3] for i in range(3)])
+        new_roles = zip(*[data_list[i::4] for i in range(4)])
         if sezione.nome == "Italia":
             RuoliSoci.objects.filter(ruolo_id__in=range(1, 14)).delete()
         else:
@@ -114,7 +118,7 @@ def modifica_consiglio(request):
         ruoli_rimossi = []
 
         ruoli_assegnati = []
-        for ruolo, id_socio, data in new_roles:
+        for ruolo, id_socio, email, data in new_roles:
             try:
                 id_ruolo = int(ruolo)
             except ValueError:

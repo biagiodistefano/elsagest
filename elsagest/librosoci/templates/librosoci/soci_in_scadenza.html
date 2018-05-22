@@ -1,12 +1,11 @@
 <div id="soci-in-scadenza">
     <div class="page-header">
-        <form id="email-promemoria">
+        <form id="email-promemoria" action="{% url 'promemoria_scadenza' %}">
             <h3>Iscrizioni in scadenza e scadute
                 {% csrf_token %}
                 <button class="btn btn-warning hidden btn-header btn-elsagest float-right email-promemoria"
                         type="submit">Invia promemoria
                 </button>
-
             </h3>
             <div class="form-result"></div>
         </form>
@@ -19,6 +18,8 @@
                 <th>Nome</th>
                 <th>Tessera n.</th>
                 <th>email</th>
+                <th>cellulare</th>
+                <th>Università</th>
                 <th>socio dal</th>
                 <th>ultimo rinnovo</th>
                 <th>scadenza iscrizione</th>

@@ -9,18 +9,76 @@
 {% block content %}
 <div class="container">
     <div class="page-header">
-        <h2 class="text-center">ELSA {{ sezione.nome }} | Nuova Email</h2>
+        <h2 class="text-center">ELSA {{ sezione.denominazione }} | Nuova Email</h2>
     </div>
 
 
-    <div id="soci-in-scadenza">
+    <div id="email-composer">
         <div class="page-header">
-            <h3>Nuova email                 <button class="btn btn-info btn-header btn-elsagest float-right" id="btn-nuova-mail-soci" type="button">Invia</button>
-</h3>
+            <h3>Nuova email</h3>
         </div>
-        <textarea id="new_email"></textarea>
+        <form id="form-invia-email" action="{% url 'send_email' %}">
+            <div id="filtri-destinatari">
+                <ul class="list-inline">
+                    <li>
+                        <div class="form-inline">
+                            <label for="soci-destinatari">ai soci di:</label>
+                            <select class="soci-destinatari" id="soci-destinatari" name="soci_destinatari">
+                                {% if sezione.nome == "Italia" %}
+                                <option value="0">Nessuno</option>
+                                <option value="1000">Tutti i soci di ELSA Italia</option>
+                                {% for sez in sezioni %}
+                                {% if sez.nome != "Italia" %}
+                                <option value="{{sez.id}}}">ELSA {{sez.denominazione}}</option>
+                                {% endif %}
+                                {% endfor %}
+                                {% else %}
+                                <option value="{{sezione.id}}">ELSA {{sezione.denominazione}}</option>
+                                <option value="0">Nessuno</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="form-inline">
+                            <label>al consiglio di: </label>
+                            <select class="consigli-dsetinatari" id="consigli-destinatari" name="consigli_destinatari">
+                                <option value="0">Nessuno</option>
+                                <option value="{1000}">Tutti i consigli</option>
+                                {% for sez in sezioni %}
+                                <option value="{sez.id}">ELSA {{sez.denominazione}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <label for="oggetto-email">Oggetto:</label>
+            <input type="text" required class="form-control" id="oggetto-email" name="oggetto">
+            <textarea id="new_email" name="email_body"></textarea>
+            <button class="btn btn-danger btn-elsagest float-right" id="btn-nuova-mail-soci" type="submit">
+                Invia
+            </button>
+            <div class="col-md-4">
+                <div class="form-group form-inline">
+                    <button class="btn btn-warning btn-elsagest" id="btn-salva-bozza" type="button">
+                        Salva come bozza
+                    </button>
+                    <select class="form-control" name="salva-bozza" id="disponibile-per">
+                        <option value="0">per me</option>
+                        <option value="1">per ELSA {{sezione.denominazione}}</option>
+                        {% if sezione.nome == "Italia" %}
+                        <option value="2">per tutte le sezioni</option>
+                        {% endif %}
+                    </select>
+                </div>
+            </div>
+            <br/>
+            <br/>
+            <div class="form-result"></div>
+        </form>
     </div>
-
+    {% include 'elsamail/lista_bozze_email.html' %}
 </div>
 
 {% if sezione.nome != "Italia" %}

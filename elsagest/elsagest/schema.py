@@ -1,9 +1,10 @@
 import graphene
 import librosoci.schema
+import elsamail.schema
 from graphene_django_extras import get_all_directives
 
 
-class Query(librosoci.schema.Query, graphene.ObjectType, ):
+class Query(librosoci.schema.Query, elsamail.schema.Query, graphene.ObjectType, ):
     pass
 
 

@@ -63,6 +63,9 @@ class RuoliSociType(DjangoObjectType):
 
 
 class SezioneElsaType(DjangoObjectType):
+
+    denominazione = graphene.String()
+
     class Meta:
         model = SezioneElsa
         filter_fields = {

@@ -21,6 +21,14 @@ class SezioneElsa(models.Model):
             domain = par.group(1)
         return domain.lower()
 
+    @property
+    def denominazione(self):
+        par = re.search('\((.+)\)', self.nome)
+        if par:
+            return par.group(1)
+        else:
+            return self.nome
+
     class Meta:
         db_table = "sezioni_elsa"
         verbose_name = "Sezione ELSA"
@@ -45,13 +53,16 @@ class Socio(models.Model):
     sezione = models.ForeignKey(SezioneElsa, on_delete=models.CASCADE)
     numero_tessera = models.IntegerField()
     codice_fiscale = models.TextField()
+    cellulare = models.TextField(null=True, blank=True, default="")
     email = models.EmailField()
+    universita = models.TextField(null=True, blank=True, default="")
     data_iscrizione = models.DateField()
     quota_iscrizione = models.FloatField()
     scadenza_iscrizione = models.DateField()
     ultimo_rinnovo = models.DateField(auto_now_add=True)
     attivo = models.BooleanField(default=True)
     data_creazione = models.DateTimeField(auto_now_add=True)
+    subscribed = models.BooleanField(default=True)
     history = HistoricalRecords()
     objects = SociManager()
 
@@ -78,6 +89,11 @@ class Socio(models.Model):
     @property
     def nome_esteso(self):
         return f"{self.nome} {self.cognome}"
+
+    def unsubscribe(self):
+        self.subscribed = False
+        self.unsubscribetoken.delete()
+        self.save()
 
     class Meta:
         db_table = "soci"
@@ -106,16 +122,17 @@ class RuoliSoci(models.Model):
         return self.consigliere_dal.strftime("%d-%m-%Y")
 
 
-class EmailConsigliere(models.Model):
-    email = models.EmailField()
+class Consigliere(models.Model):
     ruolo = models.ForeignKey(Ruolo, on_delete=models.CASCADE)
     socio = models.OneToOneField(Socio, on_delete=models.CASCADE)
+    sezione = models.ForeignKey(SezioneElsa, on_delete=models.CASCADE)
+    email = models.EmailField()
     history = HistoricalRecords()
 
     class Meta:
-        db_table = "email_consiglieri"
-        verbose_name = "Email consigliere"
-        verbose_name_plural = "Email consiglieri"
+        db_table = "consiglieri"
+        verbose_name = "Consigliere"
+        verbose_name_plural = "Consiglieri"
 
 
 class RinnovoIscrizione(models.Model):
