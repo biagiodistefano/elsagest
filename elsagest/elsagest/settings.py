@@ -24,6 +24,7 @@ WEBPACK_LOADER = {
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static/').replace("\\", "/"),
+    os.path.join(BASE_DIR, 'assets/').replace("\\", "/"),
 )
 
 GRAPHENE = {
