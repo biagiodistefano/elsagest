@@ -77,7 +77,6 @@ INSTALLED_APPS = [
     'webpack_loader',
     'graphene_django',
     'simple_history',
-    'crispy_forms'
 ]
 
 MIDDLEWARE = [
