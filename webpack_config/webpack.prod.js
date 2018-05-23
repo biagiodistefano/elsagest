@@ -13,7 +13,7 @@ const ProgressPlugin = require('webpack/lib/ProgressPlugin');
 const base = require('./webpack.base');
 const config = require('./config');
 
-exec('rm -rf les/static/build');
+exec('rm -rf elsagest/static/build');
 base.devtool = 'source-map';
 base.module.rules.push(
   {
