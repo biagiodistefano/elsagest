@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.core.mail import send_mail, get_connection, send_mass_mail
 from django.template.loader import render_to_string
 from django.http import JsonResponse
-from librosoci.models import Socio, Reminder, SezioneElsa, Ruolo, EmailConsigliere
+from librosoci.models import Socio, Reminder, SezioneElsa, Ruolo, Consigliere
 from .models import UnsubscribeToken, BozzaEmail, Email
 from datetime import datetime
 from django.db.models import Q
@@ -10,6 +10,7 @@ from graphql_relay.node.node import from_global_id
 from django.core.mail import get_connection, EmailMultiAlternatives
 from bs4 import BeautifulSoup as bs
 from django.contrib.sites.shortcuts import get_current_site
+from django.conf import settings
 
 
 # thanks to https://stackoverflow.com/a/10215091/3782345
@@ -41,11 +42,13 @@ def promemoria_scadenza(request):
     user = request.user
     if request.method == 'POST':
         try:
-            dry = request.POST.get('dry')
-            print(request.POST)
-            if not dry:
-                emailcred = user.userprofile.emailcredentials
-                post = request.POST
+            post = request.POST
+            if not settings.DRY_EMAILS:
+                try:
+                    emailcred = user.userprofile.emailcredentials
+                except Exception as e:
+                    return JsonResponse(
+                        {"success": False, "message": "Non hai aggiunto la tua email nelle impostazioni!"})
                 connection = get_connection(
                     host=emailcred.host,
                     port=emailcred.port,
@@ -77,7 +80,7 @@ def promemoria_scadenza(request):
             reminder.save()
             if len(messaggi):
                 messaggi = tuple(messaggi)
-                if not dry:
+                if not settings.DRY_EMAILS:
                     send_mass_mail(messaggi, fail_silently=False, connection=connection)
                 message = f"{len(messaggi)} promemoria inviat{'o' if len(messaggi) > 1 else 'o'} correttamente!"
             else:
@@ -101,6 +104,9 @@ def componi_email(request):
     return render(request, 'elsamail/componi_email.html', context=context)
 
 
+id_directors = list(range(8, 14)) + list(range(21, 27))
+
+
 def invia_email(request):
     user = request.user
     sezione = user.userprofile.sezione
@@ -110,19 +116,24 @@ def invia_email(request):
             html = post.get("email_body")
             if html.strip() == "":
                 return JsonResponse({"success": False, "message": "Non puoi inviare email vuote!"})
-            try:
-                emailcred = user.userprofile.emailcredentials
-            except Exception as e:
-                return JsonResponse({"success": False, "message": "Non hai aggiunto la tua email nelle impostazioni!"})
-            connection = get_connection(
-                host=emailcred.host,
-                port=emailcred.port,
-                username=emailcred.username,
-                password=emailcred.password,
-                use_tls=emailcred.tls)
-            mittente = emailcred.username
+            if not settings.DRY_EMAILS:
+                try:
+                    emailcred = user.userprofile.emailcredentials
+                except Exception as e:
+                    return JsonResponse({"success": False, "message": "Non hai aggiunto la tua email nelle impostazioni!"})
+                connection = get_connection(
+                    host=emailcred.host,
+                    port=emailcred.port,
+                    username=emailcred.username,
+                    password=emailcred.password,
+                    use_tls=emailcred.tls)
+                mittente = emailcred.username
+            else:
+                mittente = 'elsagest@gmail.com'
             soci_destinatari = int(post.get("soci_destinatari"))
             consigli_destinatari = int(post.get("consigli_destinatari"))
+            consiglieri_destinatari = int(post.get("consiglieri_destinatari"))
+            includi_directors = post.get("includi_directors")
             oggetto = post.get("oggetto")
             html = post.get("email_body")
             soup = bs(html, "html.parser")
@@ -131,7 +142,10 @@ def invia_email(request):
             protocol = request.scheme
             print(post)
 
-            if sezione.nome != "Italia" and (soci_destinatari == 1000 or SezioneElsa.objects.get(pk=soci_destinatari) != sezione):
+            if soci_destinatari == consiglieri_destinatari == consigli_destinatari == 0:
+                return JsonResponse({"success": False, "message": f"Seleziona almeno un destinatario!"})
+
+            if sezione.nome != "Italia" and soci_destinatari and soci_destinatari != sezione.id:
                 return JsonResponse({"success": False, "message": f"Non hai i permessi sufficienti per scrivere a soci diversi dalla tua sezione locale"})
 
             messaggi = []
@@ -142,27 +156,45 @@ def invia_email(request):
             elif soci_destinatari != 1000:
                 filtri_soci &= Q(sezione_id=soci_destinatari)
 
-            filtri_consigli = Q()
-            if consigli_destinatari == 0:
-                filtri_consigli &= Q(socio__sezione_id=9999)
-            elif consigli_destinatari != 1000:
-                consigli_destinatari &= Q(socio__sezione_id=consigli_destinatari)
+            filtri_consiglieri = Q()
+            if consigli_destinatari == 0 and not consiglieri_destinatari:
+                filtri_consiglieri &= Q(sezione_id=9999)
+            elif consigli_destinatari != 1000 and not consiglieri_destinatari:
+                filtri_consiglieri &= Q(sezione_id=consigli_destinatari)
+
+            if consigli_destinatari and not consiglieri_destinatari:
+                if not includi_directors:
+                    filtri_consiglieri &= ~Q(ruolo_id__in=id_directors)
+
+            lista_consiglieri = []
+            if consiglieri_destinatari == 14:
+                lista_consiglieri = [1, 14]
+            elif consiglieri_destinatari:
+                lista_consiglieri = [consiglieri_destinatari, consiglieri_destinatari - 13]
+                if includi_directors:
+                    lista_consiglieri += [consiglieri_destinatari + 6, consiglieri_destinatari - 7]
+
+            if lista_consiglieri:
+                filtri_consiglieri |= Q(ruolo_id__in=lista_consiglieri)
 
             for socio in Socio.objects.filter(filtri_soci):  # todo non inviare se già inviata nei 15 giorni precedenti
                 destinatari = [socio.email]
                 unsubscribe_token = socio.unsubscribetoken.token
                 unsubscribe_link = f"{protocol}://{current_site}/elsamail/unsubscribe/?token={unsubscribe_token}"
                 unsubscribe_msg = f"""<p>Se non vuoi più ricevere queste emeail <a target="_blank" href="{unsubscribe_link}">clicca qui</a>"""
-                # messaggi.append((oggetto, text, html + unsubscribe_msg, mittente, destinatari))
+                messaggi.append((oggetto, text, html + unsubscribe_msg, mittente, destinatari))
 
-            for emailcons in EmailConsigliere.objects.filter(filtri_consigli):  # todo non inviare se già inviata nei 15 giorni precedenti
-                destinatari = [emailcons.email]
-                # messaggi.append((oggetto, text, html, mittente, destinatari))
+            for consigliere in Consigliere.objects.filter(filtri_consiglieri):  # todo non inviare se già inviata nei 15 giorni precedenti
+                destinatari = [consigliere.email]
+                messaggi.append((oggetto, text, html, mittente, destinatari))
 
-            send_mass_html_mail(messaggi, fail_silently=False, connection=connection)
+            for messaggio in messaggi:
+                print(messaggio[-1][0])
+
+            if not settings.DRY_EMAILS:
+                send_mass_html_mail(messaggi, fail_silently=False, connection=connection)
             email = Email.objects.create(oggetto=oggetto, corpo=html, mittente=user)
             email.save()
-            print("Email inviata!")
             return JsonResponse({"success": True, "message": "Email inviata correttamente!"})
         except Exception as e:
             return JsonResponse({"success": False, "message": f"Si è verificato un errore {e}"})

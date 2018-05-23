@@ -15,6 +15,7 @@ class Email(models.Model):
     inviata_il = models.DateTimeField(auto_now_add=True)
     # destinatari = Prima o poi lo implemento
 
+
 class BozzaEmail(models.Model):
     oggetto = models.TextField()
     corpo = models.TextField()

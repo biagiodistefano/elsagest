@@ -13,7 +13,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-10 ">
-            <form class="form-horizontal" id="form-impostazioni-utente" action="{% url 'impostazioni_utente' %}">
+            <form class="form-horizontal settings" id="form-impostazioni-utente" action="{% url 'impostazioni_utente' %}">
                 <fieldset>
 
                     <!-- Form Name -->
@@ -135,7 +135,7 @@
 
                 <!-- Form Name -->
                 <legend>Impostazioni ELSA {{sezione.nome}}</legend>
-                <form class="form-horizontal" id="form-aggiungi-utente" action="{% url 'impostazioni_aggiungi_utente' %}">
+                <form class="form-horizontal settings" id="form-aggiungi-utente" action="{% url 'impostazioni_aggiungi_utente' %}">
 
                     <!-- Text input-->
                     {% autoescape off %}

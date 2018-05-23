@@ -9,11 +9,22 @@
 {% block content %}
 <div class="container">
     <div class="page-header">
-        <h3>Consiglio direttivo
-            <button class="btn btn-primary btn-header btn-elsagest float-right" id="aggiorna-consiglio" type="button">
+        <h3>Consiglio direttivo<div class="form-inline float-right"><label for="select-sezioni">sezione:</label>
+                    <select class="select-sezione form-control" id="select-sezioni" name="sezione_consiglio">
+                        {% for sez in sezioni %}
+                        {% if sez.nome == sezione.nome %}
+                        <option value="{{sez.id}}" selected >ELSA {{sez.denominazione}}</option>
+                        {% else %}
+                        <option value="{{sez.id}}" >ELSA {{sez.denominazione}}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+        </h3>
+        <br>
+        <button class="btn btn-primary btn-header btn-elsagest float-right" id="aggiorna-consiglio" type="button">
                 Aggiorna componenti
             </button>
-        </h3>
     </div>
     <div class="table-responsive table-consiglio-direttivo">
         <table class="table table-striped">
@@ -27,7 +38,7 @@
                 <th>in carica dal</th>
             </tr>
             </thead>
-            <tbody class="lista-consiglieri" data-sezione="1">
+            <tbody class="lista-consiglieri" id="table-consiglieri" data-sezione="{{sezione.id}}">
 
             </tbody>
         </table>
@@ -42,7 +53,7 @@
         <div class="page-header">
             <h3>Ultime email inviate
                 <a class="btn btn-info btn-header btn-elsagest float-right" href="{% url 'componi_email' %}" id="btn-nuova-mail-soci" role="button">
-                    Nuova email ai soci
+                    Nuova email
                 </a>
             </h3>
         </div>

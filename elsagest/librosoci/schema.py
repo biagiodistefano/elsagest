@@ -2,7 +2,7 @@ import graphene
 from graphene_django.filter.fields import DjangoFilterConnectionField
 from graphql_relay.node.node import from_global_id
 from graphene_django.types import DjangoObjectType
-from .models import Socio, SezioneElsa, RinnovoIscrizione, Ruolo, EmailConsigliere, RuoliSoci
+from .models import Socio, SezioneElsa, RinnovoIscrizione, Ruolo, Consigliere
 from datetime import date, timedelta
 from django.db.models import Q
 
@@ -33,13 +33,7 @@ class RinnovoIscrizioneType(DjangoObjectType):
         interfaces = (graphene.Node, )
 
 
-class EmailConsigliereType(DjangoObjectType):
-    class Meta:
-        model = EmailConsigliere
-        interfaces = (graphene.Node, )
-
-
-class ConsigliereType(DjangoObjectType):
+class RuoloType(DjangoObjectType):
 
     class Meta:
         model = Ruolo
@@ -54,7 +48,7 @@ class RuoliSociType(DjangoObjectType):
     in_carica_dal = graphene.String()
 
     class Meta:
-        model = RuoliSoci
+        model = Consigliere
         filter_fields = {
             "ruolo": ["exact"],
             "socio": ["exact"]
@@ -91,8 +85,9 @@ class Query(graphene.ObjectType):
                 sezione_id = int(sezione_id)
             except ValueError:
                 sezione_id = from_global_id(sezione_id)[1]
+            sezione = SezioneElsa.objects.get(pk=sezione_id)
         filtri = Q()
-
+        print(sezione_id)
         if search:
             search_filter = Q()
             for kw in search.split():
@@ -107,11 +102,14 @@ class Query(graphene.ObjectType):
                 order_by = "scadenza_iscrizione"
                 filtri &= Q(scadenza_iscrizione__lte=date.today() + timedelta(days=15))
 
+            if sezione_id and sezione.nome != "Italia":
+                filtri &= Q(sezione_id=sezione_id)
+
             elif kwargs.get("consiglieri"):
                 order_by = "ruolo_socio__id"
                 if elsa_italia:
                     if sezione_id:
-                        filtri &= Q(sezione_id=sezione_id) & Q(ruolo_socio__in=Ruolo.objects.filter(id__gte=14))
+                        Q(ruolo_socio__in=Ruolo.objects.filter(id__gte=14))
                     else:
                         filtri &= Q(ruolo_socio__in=Ruolo.objects.filter(id__lte=13))
                 else:
@@ -151,6 +149,7 @@ class Query(graphene.ObjectType):
             except ValueError:
                 sezione_id = from_global_id(sezione_id)[1]
             sezione = SezioneElsa.objects.get(pk=sezione_id)
+            filtri &= Q(sezione=sezione)
         elif not user.is_superuser:
             sezione = user.userprofile.sezione
         else:
@@ -158,5 +157,5 @@ class Query(graphene.ObjectType):
         if sezione.nome == "Italia" or (user.is_superuser and not sezione_id) or kwargs.get("nazionali"):
             filtri &= Q(ruolo_id__lte=13)
         else:
-            filtri &= Q(socio__sezione=sezione) & Q(ruolo_id__gte=14)
-        return RuoliSoci.objects.filter(filtri).order_by(order_by)
+            filtri &= Q(sezione=sezione) & Q(ruolo_id__gte=14)
+        return Consigliere.objects.filter(filtri).order_by(order_by)

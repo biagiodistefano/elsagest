@@ -33,7 +33,7 @@
                                 {% endif %}
                                 {% endfor %}
                                 {% else %}
-                                <option value="{{sezione.id}}">ELSA {{sezione.denominazione}}</option>
+                                <option value="{{sezione.id}}" selected>ELSA {{sezione.denominazione}}</option>
                                 <option value="0">Nessuno</option>
                                 {% endif %}
                             </select>
@@ -41,14 +41,36 @@
                     </li>
                     <li>
                         <div class="form-inline">
-                            <label>al consiglio di: </label>
-                            <select class="consigli-dsetinatari" id="consigli-destinatari" name="consigli_destinatari">
+                            <label for="consigli-destinatari">al consiglio di: </label>
+                            <select class="cons-destinatari" id="consigli-destinatari" data-opposite="#consiglieri-destinatari"
+                                    name="consigli_destinatari">
                                 <option value="0">Nessuno</option>
-                                <option value="{1000}">Tutti i consigli</option>
+                                <option value="1000">Tutti i consigli</option>
                                 {% for sez in sezioni %}
-                                <option value="{sez.id}">ELSA {{sez.denominazione}}</option>
+                                <option value="{{sez.id}}">ELSA {{sez.denominazione}}</option>
                                 {% endfor %}
                             </select>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="form-inline">
+                            <label for="consiglieri-destinatari">a tutti i: </label>
+                            <select class="cons-destinatari" id="consiglieri-destinatari" data-opposite="#consigli-destinatari"
+                                    name="consiglieri_destinatari">
+                                <option value="0">Nessuno</option>
+                                {% for ruolo in ruoli %}
+                                {% if ruolo.id >= 14 and ruolo.id < 21 %}
+                                <option value="{{ruolo.id}}">{{ruolo.ruolo}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="checkbox">
+                            <label class="text-muted">
+                                <input id="check-directors" type="checkbox" name="includi_directors" disabled value="true"/>includi directors
+                            </label>
                         </div>
                     </li>
                 </ul>

@@ -2,11 +2,13 @@ from datetime import date, timedelta
 import random
 import sqlite3
 import re
-from .models import Socio, Ruolo, SezioneElsa, RuoliSoci
-from elsamail.models import UnsubscribeToken
+from .models import Socio, Ruolo, SezioneElsa, Consigliere
+from elsamail.models import UnsubscribeToken, Email, BozzaEmail
 from django.contrib.auth.models import User
 from tqdm import tqdm
 import uuid
+import lorem
+from bs4 import BeautifulSoup
 
 
 def random_date(d1, d2):
@@ -21,6 +23,16 @@ with open('nomi.txt', 'r') as f:
 
 with open('cognomi.txt', 'r') as f:
     cognomi = [c.strip() for c in f.readlines()]
+
+
+soup = BeautifulSoup(open("universitalia.html", "r"), "html.parser")
+lista_universita = []
+for a in soup.find_all("a"):
+    href = a.get("href")
+    if href and href.startswith("1"):
+        codice = href.split(".")[0].replace("1", "").upper()
+        uni = a.text.strip()
+        lista_universita.append((uni, codice))
 
 
 conn = sqlite3.connect("db.sqlite3")
@@ -44,8 +56,22 @@ ruoli = [(r + " Nazionale", s) for r, s in ruoli] + ruoli
 def genera_ruoli():
     if not Ruolo.objects.all():
         for ruolo, abbreviazione in ruoli:
-            consigliere = Ruolo.objects.create(ruolo=ruolo, abbreviazione=abbreviazione)
-            consigliere.save()
+            ruolo = Ruolo.objects.create(ruolo=ruolo, abbreviazione=abbreviazione)
+            ruolo.save()
+
+
+def cellulare_random():
+    prefisso = f"3{random.randint(0, 88)}"
+    numero = f"{prefisso} {random.randint(10000000, 99999999)}" # li generiamo di 8 cifre anziché di 7 così sicuro non esistono
+    return numero
+
+
+def universita_random(sezione):
+    choices = [codice for uni, codice in lista_universita if sezione.nome.lower() in uni.lower()]
+    if choices:
+        return random.choice(choices)
+    else:
+        return random.choice([codice for uni, codice in lista_universita])
 
 
 def genera_socio_random(numero_tessera, sezione):
@@ -59,6 +85,8 @@ def genera_socio_random(numero_tessera, sezione):
         numero_tessera=numero_tessera,
         codice_fiscale="XXXXXX00XXXX11991",
         email=re.sub(r"[,']", r"", "".join(f"{nome}.{cognome}{random.randint(1, 100)}@example.com".lower().split())),
+        cellulare=cellulare_random(),
+        universita=universita_random(sezione),
         data_iscrizione=data_iscrizione,
         scadenza_iscrizione=scadenza_iscrizione,
         attivo=True,
@@ -77,8 +105,15 @@ def genera_consigli_direttivi():
             while ruoli:
                 ruolo = ruoli.pop()
                 socio = soci.pop()
-                ruolo_socio = RuoliSoci.objects.create(ruolo=ruolo, socio=socio, consigliere_dal=date.today())
-                ruolo_socio.save()
+                email = f"{ruolo.abbreviazione}@{sezione.domain}.org"
+                consigliere = Consigliere.objects.create(
+                    ruolo=ruolo,
+                    socio=socio,
+                    sezione=sezione,
+                    consigliere_dal=date.today(),
+                    email=email
+                )
+                consigliere.save()
         else:
             ruoli = list(Ruolo.objects.filter(id__lte=13))
             soci = list(Socio.objects.exclude(ruolo_socio__in=Ruolo.objects.filter(id__gte=14)))
@@ -86,16 +121,23 @@ def genera_consigli_direttivi():
             while ruoli:
                 ruolo = ruoli.pop()
                 socio = soci.pop()
-                ruolo_socio = RuoliSoci.objects.create(ruolo=ruolo, socio=socio, consigliere_dal=date.today())
-                ruolo_socio.save()
+                email = f"{ruolo.abbreviazione}@{sezione.domain}.org"
+                consigliere = Consigliere.objects.create(
+                    ruolo=ruolo,
+                    socio=socio,
+                    sezione=sezione,
+                    consigliere_dal=date.today(),
+                    email=email
+                )
+                consigliere.save()
 
 
 def genera_utenti():
-    for sezione in SezioneElsa.objects.all():
+    for sezione in tqdm(list(SezioneElsa.objects.all()), desc="Genero utenti"):
         username = re.sub(r"[,']", r"", "".join(f"presidente.elsa{sezione.denominazione}".lower().split()))
         user = User.objects.create_user(username=username, password="elsa2018")
-        user.set_password("elsa2018")
-        user.save()
+        # user.set_password("elsa2018")
+        # user.save()
         user.userprofile.sezione = sezione
         user.save()
     superuser = User.objects.create_superuser(username="biagio",
@@ -114,6 +156,29 @@ def genera_unsubscribe_token():
         ut = UnsubscribeToken.objects.create(socio=socio, token=token)
 
 
+def genera_finte_email():
+    for user in tqdm(list(User.objects.all()), desc="Genero email"):
+        for x in range(5):
+            email = Email(
+                oggetto=lorem.sentence(),
+                corpo=f"<h4>{lorem.sentence()}</h4><p>{lorem.paragraph()}</p>",
+                mittente=user
+            )
+            email.save()
+        for x in range(5, random.randint(10, 15)):
+            if user.userprofile.sezione.nome == 'Italia':
+                disponibile_per = random.choice([0, 1, 2])
+            else:
+                disponibile_per = random.choice([0, 1])
+            bozza = BozzaEmail(
+                oggetto=lorem.sentence(),
+                corpo=f"<h4>{lorem.sentence()}</h4><p>{lorem.paragraph()}</p>",
+                user=user,
+                disponibile_per=disponibile_per
+            )
+            bozza.save()
+
+
 def genera_sezioni():
     if not SezioneElsa.objects.all():
         genera_ruoli()
@@ -127,6 +192,7 @@ def genera_sezioni():
         genera_unsubscribe_token()
         genera_consigli_direttivi()
         genera_utenti()
+        genera_finte_email()
     else:
         print("Niente da generare")
 

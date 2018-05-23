@@ -33,14 +33,14 @@ GRAPHENE = {
     ]
 }
 
-"ceraltigkcfarjih"
-
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'biagiodistefano92@gmail.com'
-EMAIL_HOST_PASSWORD = 'ceraltigkcfarjih'
+EMAIL_HOST_USER = 'elsagest.it@gmail.com'
+with open('emailpwd.txt', 'r') as f:
+    EMAIL_HOST_PASSWORD = f.read().strip()
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'biagiodistefano92@gmail.com'
+DEFAULT_FROM_EMAIL = 'elsagest.it@gmail.com'
+DRY_EMAILS = True
 
 DATE_FORMAT = "%d-%m-%Y"
 
@@ -48,7 +48,10 @@ DATE_FORMAT = "%d-%m-%Y"
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'cvon$=@2x81poac5n9-keol(oby-2%%(rfc=d^x_hydkh3w2fr'
+with open("secret.txt", "r") as f:
+    SECRET_KEY = f.read().strip()
+# SECRET_KEY = 'cvon$=@2x81poac5n9-keol(oby-2%%(rfc=d^x_hydkh3w2fr'
+
 PWD_KEY = b'_v9pwPL-PrDCTmBXSeIGYxt5COFHmGGtzq3v_LTpBAk='  # TODO: SECURITY ISSUE!!
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -166,3 +169,4 @@ LOGIN_REDIRECT_URL = '/home/'
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')

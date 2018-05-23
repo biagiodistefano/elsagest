@@ -1,0 +1,49 @@
+.float-right {
+  float: right;
+  margin-top: -6px;
+}
+
+.form-info-socio {
+  width: 90% !important;
+  margin-right: auto;
+  margin-left: auto;
+  input {
+    margin-top: 2% !important;
+  }
+  label {
+    margin-bottom: -2% !important;
+    margin-top: 2%;
+  }
+  .btn-nuovo-rinnovo {
+    margin: 3%;
+  }
+}
+
+.modal-dialog {
+    max-width: 75% !important;
+    @media (max-width: 767px) {
+      width: initial !important;
+    }
+  }
+
+.modal-content {
+  max-height: 90vh;
+}
+
+.modal-body {
+  max-height: 75vh;
+  overflow-y: auto;
+}
+
+.loader {
+  text-align: center;
+}
+
+.no-results {
+  text-align: center;
+  font-weight: 700;
+}
+
+.error-retry {
+  text-align: center;
+}

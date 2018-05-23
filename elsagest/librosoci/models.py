@@ -18,7 +18,7 @@ class SezioneElsa(models.Model):
         domain = re.sub(r"[,']", r"", "".join(f"elsa{self.nome}".lower().split()))
         par = re.search('\((.+)\)', domain)
         if par:
-            domain = par.group(1)
+            domain = "elsa" + par.group(1)
         return domain.lower()
 
     @property
@@ -104,7 +104,7 @@ class Socio(models.Model):
 class Ruolo(models.Model):
     ruolo = models.TextField()
     abbreviazione = models.TextField()
-    soci = models.ManyToManyField(Socio, through="RuoliSoci", related_name="ruolo_socio")
+    soci = models.ManyToManyField(Socio, through="Consigliere", related_name="ruolo_socio")
 
     class Meta:
         db_table = "ruoli_consiglieri"
@@ -112,22 +112,17 @@ class Ruolo(models.Model):
         verbose_name_plural = "Consiglieri"
 
 
-class RuoliSoci(models.Model):
+class Consigliere(models.Model):
     ruolo = models.ForeignKey(Ruolo, on_delete=models.CASCADE)
     socio = models.ForeignKey(Socio, on_delete=models.CASCADE)
+    sezione = models.ForeignKey(SezioneElsa, on_delete=models.CASCADE)
     consigliere_dal = models.DateField(auto_now_add=True)
+    email = models.EmailField()
+    history = HistoricalRecords()
 
     @property
     def in_carica_dal(self):
         return self.consigliere_dal.strftime("%d-%m-%Y")
-
-
-class Consigliere(models.Model):
-    ruolo = models.ForeignKey(Ruolo, on_delete=models.CASCADE)
-    socio = models.OneToOneField(Socio, on_delete=models.CASCADE)
-    sezione = models.ForeignKey(SezioneElsa, on_delete=models.CASCADE)
-    email = models.EmailField()
-    history = HistoricalRecords()
 
     class Meta:
         db_table = "consiglieri"

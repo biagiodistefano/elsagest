@@ -30,9 +30,10 @@
                         <label>Email</label>
                         <input class="form-control" name="email" placeholder="Email" type="email" required/>
                         <label>Cellulare</label>
-                        <input class="form-control" name="cellulare" placeholder="Cellulare" type="text" />
+                        <input class="form-control" name="cellulare" placeholder="Cellulare" type="text"/>
                         <label>Università/Dipartimento</label>
-                        <input class="form-control" name="universita" placeholder="Università/Dipartimento" type="text" required/>
+                        <input class="form-control" name="universita" placeholder="Università/Dipartimento" type="text"
+                               required/>
                         <label>Tessra n#</label>
                         <input class="form-control" name="numero_tessera" placeholder="Tessera n#" type="text"
                                required/>
@@ -42,8 +43,11 @@
                         <label>Quota iscrizione</label>
                         <input class="form-control" name="quota_iscrizione" placeholder="Quota iscrizione (EUR)"
                                type="text" required/>
+                        <input type="hidden" id="input-elimina-socio" name="elimina">
                         <div class="row rinnovo-iscrizione">
-                            <button class="btn btn-default btn-nuovo-rinnovo" data-action="add" type="button">Nuovo rinnovo</button>
+                            <button class="btn btn-default btn-nuovo-rinnovo" data-action="add" type="button">Nuovo
+                                rinnovo
+                            </button>
                             <!--
                             <div class="nuovo-rinnovo">
                             <div class="col-xs-6 col-md-6">
@@ -81,9 +85,14 @@
                 </div>
                 <div class="modal-footer">
                     <div class="form-result float-left"></div>
+                    <button class="btn btn-default btn-danger" type="button" id="btn-elimina-socio">Elimina</button>
+                    <button class="btn btn-default btn-warning" type="button" id="ripristina-info-socio">Ripristina
+                    </button>
                     <button class="btn btn-default btn-primary" type="submit">Salva</button>
-                    <button class="btn btn-default btn-warning" type="button" id="ripristina-info-socio">Ripristina</button>
-                    <button class="btn btn-default" id="chiudi-modal-modifica-socio" type="button" data-dismiss="modal">Chiudi</button>
+                    <button class="btn btn-default" id="chiudi-modal-modifica-socio" type="button" data-dismiss="modal">
+                        Annulla
+                    </button>
+
                 </div>
             </form>
         </div>

@@ -82,7 +82,13 @@ const caricaInfoSocio = socioId => {
 };
 
 
-$(document).on('click', '.lista-soci tr', evt => {
+$(document).on('click', '.lista-soci tr .email', evt => {
+  const $this = $(evt.currentTarget);
+  $this.stopPropagation();
+});
+
+
+$(document).on('click', '.lista-soci.editable tr', evt => {
   caricaInfoSocio($(evt.currentTarget).find('input').val());
   modalModificaSocio.modal('show');
   modalModificaSocio.find('.datepicker-modal').datepicker(datepickerSettings);
@@ -90,14 +96,19 @@ $(document).on('click', '.lista-soci tr', evt => {
 
 modalModificaSocio.on('hide.bs.modal', () => {
   modalModificaSocio.find('.datepicker-modal').datepicker('destroy');
+  // modalModificaSocio.find('.nuovo-rinnovo').remove();
 });
 
 
-$('#form-modifica-socio').submit(event => {
+const formModificaSocio = $('#form-modifica-socio');
+
+
+formModificaSocio.submit(event => {
   event.preventDefault();
   const $this = $(event.currentTarget);
   const formResult = $this.find('.form-result');
   const datastring = $(event.currentTarget).serialize();
+  $this.find('button').attr('disabled', true);
   $.post({
     url: '/librosoci/modificasocio/',
     data: datastring,
@@ -106,7 +117,6 @@ $('#form-modifica-socio').submit(event => {
   ).done(response => {
     const { success, message } = response;
     $(formResult).empty();
-    console.log(formResult);
     if (success) {
       $(formResult).append($(`<h4 class="text-center text-success bg-success">${message}</h4>`));
     } else {
@@ -117,6 +127,7 @@ $('#form-modifica-socio').submit(event => {
     $(formResult).append($('<h4 class="text-center text-danger bg-danger">Si è verificato un errore</h4>'));
   }).always(() => {
     setTimeout(() => {
+      $this.find('button').attr('disabled', false);
       $(formResult).empty();
       SociLoader.init();
       SociLoader.fetchSoci(true);
@@ -165,5 +176,19 @@ $('.btn-nuovo-rinnovo').on('click', evt => {
     thisParent.find('.nuovo-rinnovo').remove();
     $this.attr('data-action', 'add');
     $this.text('Nuovo rinnovo');
+  }
+});
+
+
+$('#btn-elimina-socio').click(() => {
+  // eslint-disable-next-line no-restricted-globals
+  const r = confirm('Sei sicuro di voler eliminare questo socio?');
+  if (r) {
+    $('#input-elimina-socio').val('delete');
+    formModificaSocio.trigger('submit');
+    setTimeout(() => {
+      $('#chiudi-modal-modifica-socio').trigger('click');
+      modalModificaSocio.modal('toggle');
+    }, 3000);
   }
 });
