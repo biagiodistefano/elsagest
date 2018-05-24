@@ -1,0 +1,12 @@
+[Unit]
+Description=gunicorn daemon
+After=network.target
+
+[Service]
+User=neslinesli93
+Group=neslinesli93
+WorkingDirectory=/home/neslinesli93/STUFF/elsagest/elsagest
+ExecStart=/home/neslinesli93/.pyenv/shims/gunicorn --timeout 300 --access-logfile /home/neslinesli93/STUFF/elsagest/gunicon_access.log --error-logfile /home/neslinesli93/STUFF/elsagest/gunicon_error.log --workers 3 --bind unix:/home/neslinesli93/STUFF/elsagest/elsagest/elsagest.sock elsagest.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
