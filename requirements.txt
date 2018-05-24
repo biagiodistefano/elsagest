@@ -9,5 +9,5 @@ Django==2.0.2
 graphene==2.0.1
 beautifulsoup4==4.6.0
 simple_history==1.1
-django-webpack-loader=0.0.6
+django-webpack-loader==0.0.6
 
