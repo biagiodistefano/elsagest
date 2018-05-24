@@ -54,7 +54,6 @@ with open("secret.txt", "r") as f:
     SECRET_KEY = f.read().strip()
 # SECRET_KEY = 'cvon$=@2x81poac5n9-keol(oby-2%%(rfc=d^x_hydkh3w2fr'
 
-PWD_KEY = b'_v9pwPL-PrDCTmBXSeIGYxt5COFHmGGtzq3v_LTpBAk='  # TODO: SECURITY ISSUE!!
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
