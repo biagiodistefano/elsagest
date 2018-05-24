@@ -156,3 +156,5 @@ typings/
 # dotenv environment variables file
 .env
 
+# Webpack bundles
+elsagest/static/webpack-stats.json
