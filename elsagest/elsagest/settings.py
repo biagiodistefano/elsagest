@@ -15,25 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static/').replace("\\", "/"),
-    # os.path.join(BASE_DIR, 'assets/').replace("\\", "/"),
-)
-
-WEBPACK_LOADER = {
-    'DEFAULT': {
-        'BUNDLE_DIR_NAME': 'build/',  # must end with slashes
-        'STATS_FILE': os.path.join(BASE_DIR, 'static', 'webpack-stats.json'),
-    }
-}
-
-
-GRAPHENE = {
-    'SCHEMA': 'elsagest.schema.schema',
-    'MIDDLEWARE': [
-        'graphene_django_extras.ExtraGraphQLDirectiveMiddleware'
-    ]
-}
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -57,6 +38,31 @@ with open("secret.txt", "r") as f:
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static/').replace("\\", "/"),
+    # os.path.join(BASE_DIR, 'assets/').replace("\\", "/"),
+)
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'build/',  # must end with slashes
+        'STATS_FILE': os.path.join(BASE_DIR, 'static', 'webpack-stats.json'),
+    }
+}
+
+if not DEBUG:
+    WEBPACK_LOADER.update({
+        'BUNDLE_DIR_NAME': 'dist/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats-prod.json')
+    })
+
+GRAPHENE = {
+    'SCHEMA': 'elsagest.schema.schema',
+    'MIDDLEWARE': [
+        'graphene_django_extras.ExtraGraphQLDirectiveMiddleware'
+    ]
+}
 
 ALLOWED_HOSTS = ['*']
 INTERNAL_IPS = ['127.0.0.1']
@@ -172,4 +178,4 @@ LOGIN_REDIRECT_URL = '/home/'
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
