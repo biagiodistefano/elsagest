@@ -24,7 +24,7 @@ WEBPACK_LOADER = {
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static/').replace("\\", "/"),
-    os.path.join(BASE_DIR, 'assets/').replace("\\", "/"),
+    # os.path.join(BASE_DIR, 'assets/').replace("\\", "/"),
 )
 
 GRAPHENE = {
@@ -169,4 +169,4 @@ LOGIN_REDIRECT_URL = '/home/'
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
