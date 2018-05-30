@@ -4,7 +4,7 @@ const utils = require('./utils');
 
 module.exports = {
   port: 3000,
-  host: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '165.227.143.103',
+  host: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'http://www.elsagest.tk',
   publicPath: 'elsagest/static/build/',
   srcPath: path.join(__dirname, '..', 'elsagest'),
   outputPath: path.join(__dirname, '..', 'elsagest', 'static', 'build'),
