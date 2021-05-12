@@ -36,7 +36,7 @@
     "popper.js": "^1.12.9",
     "print-js": "^1.0.32",
     "qs": "^6.5.1",
-    "codemirror": "^5.37.0"
+    "codemirror": "^5.58.2"
   },
   "homepage": "https://github.com/raptored01/elsagest#readme",
   "devDependencies": {
