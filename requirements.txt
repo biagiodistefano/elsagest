@@ -56,6 +56,6 @@ termcolor==1.1.0
 tqdm==4.19.4
 Twisted==17.9.0
 typing==3.6.2
-urllib3==1.22
+urllib3==1.26.5
 w3lib==1.18.0
 zope.interface==4.4.3
